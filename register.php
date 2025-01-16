@@ -1,6 +1,7 @@
 <?php
-require_once './class/db.php'; // Inclure le fichier de connexion à la base de données
-require_once './class/user.php'; // Inclure le fichier de la classe User
+require_once './class/db.php'; 
+require_once './class/user.php'; 
+require_once './class/enrollement.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Récupérer les données du formulaire
@@ -21,12 +22,9 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
     }
 }
 
-
-    // Créer une instance de la classe Database et récupérer la connexion PDO
     $database = new Database();
     $pdo = $database->getPDO();
 
-    // Utiliser la méthode register de la classe User pour inscrire l'utilisateur
     $message = User::register($nom, $email, $mot_de_passe, $role, $pdo, $avatar);
 }
 ?>
@@ -181,7 +179,7 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
         </div>
     </div>
     <script>
-        // Code pour le menu mobile
+       
         document.getElementById('burger-icon').addEventListener('click', function() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
