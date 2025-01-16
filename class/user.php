@@ -18,7 +18,7 @@ class User {
     }
 
     public static function register($name, $email, $password, $role,$pdo, $avatar = null) {
-    // Vérifier si l'email ou le nom d'utilisateur existe déjà
+    
     $sql = "SELECT id FROM Utilisateur WHERE email = :email ";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':email', $email);
@@ -29,43 +29,43 @@ class User {
         // Retourner un message d'erreur si l'email ou le nom d'utilisateur existe déjà
         return "<div class='text-red-500 p-3 mb-4 border border-red-300 bg-red-100 rounded'>L'email existe déjà.</div>";
     } else {
-        // Hacher le mot de passe pour sécurité
+        
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-
-        // Préparer la requête d'insertion
-        $sql = "INSERT INTO Utilisateur (nom, email, mot_de_passe, role,avatar) VALUES (:nom, :email, :mot_de_passe, :role,:avatar)";
+        $statut = ($role == 'Etudiant') ? 'actif' : 'En cours';
+        
+        $sql = "INSERT INTO Utilisateur (nom, email, mot_de_passe, role,statut,avatar) VALUES (:nom, :email, :mot_de_passe, :role,:statut,:avatar)";
         $stmt = $pdo->prepare($sql);
 
-        // Lier les valeurs aux paramètres
+        
         $stmt->bindParam(':nom', $name);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':mot_de_passe', $hashed_password);
         $stmt->bindParam(':role', $role);
         $stmt->bindParam(':avatar', $avatar);
+        $stmt->bindParam(':statut', $statut);
 
-        // Exécuter la requête
+        
         if ($stmt->execute()) {
-            // Récupérer l'id de l'utilisateur inséré
+            
             $userId = $pdo->lastInsertId();
 
-            // Démarrer la session et stocker les informations de l'utilisateur
             session_start();
             $_SESSION['id'] = $userId;
             $_SESSION['email'] = $email;
             $_SESSION['nom'] = $name;
             $_SESSION['role'] = $role;
 
-            // Rediriger vers une page spécifique après l'inscription
             if ($role == 'Etudiant') {
                 header('Location: ../etudiant/catalogecours.php');
             } else if($role == 'Enseignant'){
+               
                 header('Location: ../enseignant/dashbord.php');
             }else{
                 header('../admin/dashbord.html');
             }
             exit();
         } else {
-            // Retourner un message d'erreur si l'insertion échoue
+            
             return "<div class='text-red-500 p-3 mb-4 border border-red-300 bg-red-100 rounded'>Erreur d'inscription : " . $stmt->errorInfo()[2] . "</div>";
         }
     }
@@ -79,6 +79,12 @@ class User {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($mot_de_passe, $user['mot_de_passe'])) {
+            session_start();
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['nom'] = $user['nom'];
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['role'] = $user['role'];
+
             return new self($user['id'], $user['nom'], $user['email'], $user['mot_de_passe'], $user['role'], $pdo);
         }
 
