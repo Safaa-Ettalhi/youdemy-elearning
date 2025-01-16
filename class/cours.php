@@ -109,12 +109,12 @@ class Course {
     // Récupérer les cours
     public function getCoursesRand() {
     $stmt = $this->pdo->prepare('
-        SELECT Cours.*, Utilisateur.nom, Category.nom AS category_name, GROUP_CONCAT(Tag.nom) AS tags
+        SELECT Cours.*, Utilisateur.nom AS enseignant_nom, Category.nom AS category_name, GROUP_CONCAT(Tag.nom) AS tags
         FROM Cours
         LEFT JOIN Category ON Cours.categorie_id = Category.id
         LEFT JOIN Cours_Tags ON Cours.id = Cours_Tags.cours_id
         LEFT JOIN Tag ON Cours_Tags.tag_id = Tag.id
-        LEFT JOIN Utilisateur ON Cours.enseignant_id = Utilisateur.id
+        LEFT JOIN Utilisateur ON Cours.user_id = Utilisateur.id
         GROUP BY Cours.id, Utilisateur.nom, Category.nom
         ORDER BY RAND() LIMIT 6
     ');
@@ -122,17 +122,17 @@ class Course {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 public function getCourses($page = 1, $perPage = 6) {
-    // Calcul de l'offset basé sur la page actuelle
+    
     $offset = ($page - 1) * $perPage;
 
     $stmt = $this->pdo->prepare('
         SELECT Cours.*, Utilisateur.nom, Utilisateur.avatar AS avatar, Category.nom AS category_name, 
-        GROUP_CONCAT(Tag.nom) AS tags, COUNT(Enrollment.etudiant_id) AS nbr_etudiants
+        GROUP_CONCAT(Tag.nom) AS tags, COUNT(Enrollment.user_id) AS nbr_etudiants
         FROM Cours
         LEFT JOIN Category ON Cours.categorie_id = Category.id
         LEFT JOIN Cours_Tags ON Cours.id = Cours_Tags.cours_id
         LEFT JOIN Tag ON Cours_Tags.tag_id = Tag.id
-        LEFT JOIN Utilisateur ON Cours.enseignant_id = Utilisateur.id
+        LEFT JOIN Utilisateur ON Cours.user_id = Utilisateur.id
         LEFT JOIN Enrollment ON Cours.id = Enrollment.cours_id
         GROUP BY Cours.id, Utilisateur.nom, Category.nom
         LIMIT :perPage OFFSET :offset
@@ -157,25 +157,50 @@ public function getCourseById($course_id) {
         SELECT 
             Cours.*, 
             Utilisateur.nom AS enseignant, 
-            Utilisateur.avatar, 
+            Utilisateur.avatar AS avatar,
+            Utilisateur.bio AS bio, 
             Category.nom AS categorie, 
-            COALESCE(Enseignant.descpription, "") AS enseignant_description, 
+            COALESCE(Utilisateur.descpription, "") AS enseignant_description, 
             GROUP_CONCAT(Tag.nom) AS tags, 
-            COUNT(Enrollment.etudiant_id) AS nbr_etudiants
+            COUNT(Enrollment.user_id) AS nbr_etudiants
         FROM Cours
         LEFT JOIN Category ON Cours.categorie_id = Category.id
         LEFT JOIN Cours_Tags ON Cours.id = Cours_Tags.cours_id
         LEFT JOIN Tag ON Cours_Tags.tag_id = Tag.id
-        LEFT JOIN Enseignant ON Cours.enseignant_id = Enseignant.id
-        LEFT JOIN Utilisateur ON Cours.enseignant_id = Utilisateur.id
+        LEFT JOIN Utilisateur ON Cours.user_id = Utilisateur.id
         LEFT JOIN Enrollment ON Cours.id = Enrollment.cours_id
         WHERE Cours.id = :id
         GROUP BY Cours.id, Utilisateur.nom, Category.nom
     ');
+
     $stmt->bindParam(':id', $course_id, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+
+public function searchCourses($searchTerm) {
+    $stmt = $this->pdo->prepare('
+        SELECT Cours.*, Utilisateur.nom, Utilisateur.avatar AS avatar, Category.nom AS category_name, 
+        GROUP_CONCAT(Tag.nom) AS tags, COUNT(Enrollment.user_id) AS nbr_etudiants
+        FROM Cours
+        LEFT JOIN Category ON Cours.categorie_id = Category.id
+        LEFT JOIN Cours_Tags ON Cours.id = Cours_Tags.cours_id
+        LEFT JOIN Tag ON Cours_Tags.tag_id = Tag.id
+        LEFT JOIN Utilisateur ON Cours.user_id = Utilisateur.id
+        LEFT JOIN Enrollment ON Cours.id = Enrollment.cours_id
+        WHERE Cours.titre LIKE :searchTerm 
+           OR Cours.description LIKE :searchTerm
+        GROUP BY Cours.id, Utilisateur.nom, Category.nom
+    ');
+
+    $searchTermWithWildcards = '%' . $searchTerm . '%';
+    $stmt->bindParam(':searchTerm', $searchTermWithWildcards, PDO::PARAM_STR);
+
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 
 
