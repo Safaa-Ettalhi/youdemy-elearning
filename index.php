@@ -1,36 +1,28 @@
 <?php
-include('./class/db.php'); // Inclure la connexion à la base de données
-include('./class/cours.php'); // Inclure la classe Course
+include('./class/db.php'); 
+include('./class/cours.php');
 include('./class/categorie.php');
 include('./class/enseignent.php');
 
-// Créer une instance de la base de données
 $db = new Database();
 $pdo = $db->getPDO();
 
-// Créer une instance de la classe Course et récupérer les cours
 $course = new Course($pdo);
 $courses = $course->getCoursesRand();
 
 $category = new Category($pdo);
 
-$perPage = 6;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-// Calcul du nombre total de pages
-$totalCategories = $category->getTotalCategories();
-$totalPages = ceil($totalCategories / $perPage);
 
 // Récupérer les catégories pour la page actuelle
-$categories = $category->getCategories($page,$perPage);
+$categories = $category->getCategories();
 
 $enseignant = new Enseignant(0, '', '', '', $pdo);
-
-
-$perPage = 4;
+$pertPage = 4;
 $totalEnseignants = $enseignant->getTotalEnseignants();
-$totalPages = ceil($totalEnseignants / $perPage);
+$totalPages = ceil($totalEnseignants / $pertPage);
 
-$enseignants = $enseignant->getEnseignentPaginated($page, $perPage);
+$enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
 
 ?>
 
@@ -62,7 +54,7 @@ $enseignants = $enseignant->getEnseignentPaginated($page, $perPage);
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                    <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                      <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
@@ -203,7 +195,7 @@ $enseignants = $enseignant->getEnseignentPaginated($page, $perPage);
                         <img src="<?php echo $course['image']; ?>" alt="<?php echo htmlspecialchars($course['titre']); ?>" class="h-48 w-full object-contain mb-6 transform transition duration-300 hover:scale-105 cursor-pointer">
                         <h3 class="text-2xl text-center font-semibold text-slate-800 mb-8 hover:text-orange-400 cursor-pointer"><?php echo htmlspecialchars($course['titre']); ?></h3>
                         <div class="flex justify-center text-xl">
-                            <a href="coursdetails.php?id=<?php echo $course['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
+                            <a href="./visiteur/coursdetails.php?id=<?php echo $course['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
                                 En savoir plus
                             </a>
                         </div>
@@ -247,36 +239,7 @@ $enseignants = $enseignant->getEnseignentPaginated($page, $perPage);
         </div>
 
         <!-- Pagination -->
-        <div class="mt-12 flex justify-center">
-            <div class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <!-- Lien Précédent -->
-                <?php if ($page > 1): ?>
-                    <a href="?page=<?= $page - 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                        <span class="sr-only">Précédent</span>
-                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </a>
-                <?php endif; ?>
-
-                <!-- Liens des pages -->
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?= $i ?>" class="<?= $i === $page ? 'bg-youdemy text-white' : 'bg-white text-gray-500' ?> relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                        <?= $i ?>
-                    </a>
-                <?php endfor; ?>
-
-                <!-- Lien Suivant -->
-                <?php if ($page < $totalPages): ?>
-                    <a href="?page=<?= $page + 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                        <span class="sr-only">Suivant</span>
-                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </a>
-                <?php endif; ?>
-            </div>
-        </div>
+        
     </div>
 </section>
 
