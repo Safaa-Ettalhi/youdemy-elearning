@@ -16,14 +16,14 @@ class Enseignant extends User {
         $stmt->execute([$this->id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getEnseignentPaginated($page, $perPage) {
-    $offset = ($page - 1) * $perPage;
+    public function getEnseignantPaginated($pageE, $perPage) {
+    $offset = ($pageE - 1) * $perPage;
 
     $stmt = $this->pdo->prepare('
         SELECT Utilisateur.nom AS enseignant_nom, Utilisateur.avatar, 
-               COALESCE(Enseignant.descpription, "") AS enseignant_description
-        FROM Enseignant
-        JOIN Utilisateur ON Enseignant.id = Utilisateur.id
+               COALESCE(Utilisateur.descpription, "") AS enseignant_description
+        FROM Utilisateur
+        WHERE Utilisateur.role = "Enseignant"
         LIMIT :perPage OFFSET :offset
     ');
 
@@ -34,8 +34,9 @@ class Enseignant extends User {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+
 public function getTotalEnseignants() {
-    $stmt = $this->pdo->prepare('SELECT COUNT(*) as total FROM Enseignant');
+    $stmt = $this->pdo->prepare('SELECT COUNT(*) as total FROM Utilisateur WHERE role = "Enseignant"');
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 }
