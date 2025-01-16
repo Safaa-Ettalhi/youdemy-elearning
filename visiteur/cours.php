@@ -7,17 +7,21 @@ $perPage = 6;
 
 // Récupérer la page actuelle à partir de l'URL (si non spécifié, la page 1 est utilisée)
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 
 $db = new Database();
 $pdo = $db->getPDO();
 
 $course = new Course($pdo);
 
-$courses = $course->getCourses($page, $perPage);
-
-
-$totalCourses = $course->getTotalCourses();
+if (!empty($searchTerm)) {
+    $courses = $course->searchCourses($searchTerm);
+    $totalCourses = count($courses);
+    $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
+} else {
+    $courses = $course->getCourses($page, $perPage);
+    $totalCourses = $course->getTotalCourses();
+}
 
 $totalPages = ceil($totalCourses / $perPage);
 
@@ -31,7 +35,6 @@ $totalPages = ceil($totalCourses / $perPage);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cours - Youdemy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
         tailwind.config = {
             theme: {
@@ -44,6 +47,7 @@ $totalPages = ceil($totalCourses / $perPage);
             }
         }
     </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
@@ -52,7 +56,7 @@ $totalPages = ceil($totalCourses / $perPage);
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                    <img src="../SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
@@ -104,17 +108,18 @@ $totalPages = ceil($totalCourses / $perPage);
     <!-- Main Content -->
     <main class="md:pt-20" >
         <!-- Search Section with Background Image -->
-        <div class=" bg-cover bg-center h-96 flex items-center justify-center" style="background-image: url('../cours.png');">
-            <div class="bg-white bg-opacity-10 p-2  md:p-8 rounded-lg w-full max-w-3xl  ">
-                <h1 class="text-4xl font-bold text-orange-400 mb-4 text-center">Rechercher des cours</h1>
-                <form class="flex gap-4">
-                    <input type="text" placeholder="Rechercher des cours..." class="flex-grow px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-youdemy focus:border-transparent text-lg">
-                    <button type="submit" class="bg-youdemy text-white px-6 py-3 rounded-md hover:bg-youdemy-hover focus:outline-none focus:ring-2 focus:ring-youdemy focus:ring-offset-2 text-lg font-semibold">
-                        Rechercher
-                    </button>
-                </form>
-            </div>
+        <div class="bg-youdemy text-white py-16 pt-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-bold mb-4">Découvrez nos cours</h1>
+            <p class="text-xl mb-8">Trouvez le cours parfait pour développer vos compétences</p>
+            <form class="flex w-full md:w-2/3 lg:w-1/2" method="GET" action="">
+                <input name="search" type="text" placeholder="Rechercher un cours..." class="flex-grow text-black px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-youdemy focus:border-transparent">
+                <button type="submit" class="bg-white text-youdemy px-6 py-2 rounded-r-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-youdemy focus:ring-offset-2">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
         </div>
+    </div>
 
         <!-- Courses Section -->
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -136,7 +141,7 @@ $totalPages = ceil($totalCourses / $perPage);
                             <span class="text-sm text-gray-500"><?= htmlspecialchars($course['nbr_etudiants']); ?> étudiants</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-youdemy font-bold text-xl"> <?= htmlspecialchars($course['price']); ?>$</span>
+                            <span class="text-youdemy font-bold text-xl"> <?= htmlspecialchars($course['prix']); ?>$</span>
                             <div class="flex justify-center text-xl">
                             <a href="./coursdetails.php?id=<?php echo $course['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
                                 En savoir plus
