@@ -57,7 +57,7 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
+                    <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
@@ -76,10 +76,10 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
                 </div>
                 <div class="hidden sm:flex sm:items-center sm:justify-center sm:gap-2">
                     <button class="bg-white hover:bg-orange-500 hover:text-white text-l text-orange-400 border border-orange-400 px-6 py-2 rounded-full transition duration-300">
-                        <a href="./login.html">login</a>
+                        <a href="./login.php">login</a>
                     </button>
                     <button class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
-                       <a href="./register.html">s'inscrire</a> 
+                       <a href="./register.php">s'inscrire</a> 
                     </button>
                 </div>
             </div>
@@ -95,10 +95,10 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
             <a href="convertision.html" class="block text-gray-600 hover:text-gray-900 py-2">Blog</a>
             <a href="convertision.html" class="block text-gray-600 hover:text-gray-900 py-2">Contact</a>
             <button class="w-full bg-white hover:bg-orange-500 hover:text-white text-l text-orange-400 border border-orange-400 px-6 py-2 rounded-full transition duration-300 mt-4">
-                <a href="./register.html">s'inscrire</a>
+                <a href="./register.php">s'inscrire</a>
             </button>
             <button class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 mt-4">
-                <a href="./login.html">login</a>
+                <a href="./login.php">login</a>
             </button>
         </div>
     </div>
