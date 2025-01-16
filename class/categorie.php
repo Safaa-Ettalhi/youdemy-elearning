@@ -37,7 +37,7 @@ class Category {
     }
 
     // Récupérer les catégories
-    public function getCategories($page = 1, $perPage = 6) {
+  /*  public function getCategories($page = 1, $perPage = 6) {
     $offset = ($page - 1) * $perPage;
     // Assurez-vous que limit et offset sont des entiers
     $stmt = $this->pdo->prepare('SELECT * FROM Category ORDER BY RAND() LIMIT :perPage OFFSET :offset');
@@ -45,13 +45,18 @@ class Category {
     $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
+}*/
+public function getCategories() {
+    
+    // Assurez-vous que limit et offset sont des entiers
+    $stmt = $this->pdo->prepare('SELECT * FROM Category ORDER BY RAND() LIMIT 6');
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);}
     // Obtenir le nombre total de catégories
-    public function getTotalCategories() {
+  /*  public function getTotalCategories() {
         $stmt = $this->pdo->query('SELECT COUNT(*) FROM Category');
         return $stmt->fetchColumn();
-    }
+    }*/
 
     // Supprimer une catégorie
     public function deleteCategory($id) {
