@@ -1,10 +1,14 @@
 <?php
-
+require_once 'user.php';
 class Etudiant extends User {
 
-    public function __construct($id, $nom, $email, $mot_de_passe, $pdo) {
+    
+    public function __construct($id, $nom, $email, $mot_de_passe, $pdo ) {
         parent::__construct($id, $nom, $email, $mot_de_passe, 'Etudiant', $pdo);
+
     }
+
+    
 
     public function enrollInCourse($cours_id) {
         $stmt = $this->pdo->prepare('INSERT INTO Enrollment (etudiant_id, cours_id, date_inscription) VALUES (?, ?, NOW())');
