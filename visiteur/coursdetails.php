@@ -46,7 +46,7 @@ if (!$course) {
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                    <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
@@ -130,7 +130,7 @@ if (!$course) {
                     <div class="text-3xl font-bold mb-4">49,99 €</div>
                     <p class="text-sm text-gray-500 mb-4">Garantie de remboursement de 30 jours</p>
                     <button class="w-full bg-youdemy hover:bg-youdemy-hover text-white font-bold py-2 px-4 rounded">
-                      <a href="./login.php"> S'inscrire maintenant</a> 
+                      <a href="../login.php"> S'inscrire maintenant</a> 
                     </button>
                 </div>
             </div>
