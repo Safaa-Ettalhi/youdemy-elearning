@@ -68,7 +68,25 @@ class Enrollment {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+public function updateEnrollmentStatus($coursId, $userId, $newStatus = 'Complet') {
+        try {
+            // Préparer la requête
+            $query = "UPDATE Enrollment SET status = :status WHERE cours_id = :coursId AND user_id = :userId";
+            $stmt = $this->pdo->prepare($query);
 
+            // Associer les paramètres
+            $stmt->bindParam(':status', $newStatus, PDO::PARAM_STR);
+            $stmt->bindParam(':coursId', $coursId, PDO::PARAM_INT);
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+
+            // Exécuter la requête
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            // Afficher un message d'erreur pour le débogage (à éviter en production)
+            error_log("Erreur lors de la mise à jour du statut : " . $e->getMessage());
+            return false;
+        }
+    }
     // Définir l'ID de l'étudiant et du cours pour ajouter une inscription
     public function setEnrollmentDetails($etudiant_id, $cours_id) {
         $this->etudiant_id = $etudiant_id;
