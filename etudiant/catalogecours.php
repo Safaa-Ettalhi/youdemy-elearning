@@ -2,7 +2,8 @@
 session_start();
 include('../class/db.php');
 include('../class/cours.php'); 
-
+include('../class/videoCourse.php');  
+include('../class/documentCourse.php'); 
 
 // Vérifiez si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
@@ -17,17 +18,19 @@ $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 $db = new Database();
 $pdo = $db->getPDO();
 $course = new Course($pdo);
-
+$videoCourse = new VideoCourse($pdo);
+$documentCourse = new DocumentCourse($pdo);
+$courses = array_merge($videoCourse->getCourses(), $documentCourse->getCourses());
 if (!empty($searchTerm)) {
     $courses = $course->searchCourses($searchTerm);
     $totalCourses = count($courses);
     $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
 } else {
-    $courses = $course->getCourses($page, $perPage);
-    $totalCourses = $course->getTotalCourses();
+    $courses = array_merge($videoCourse->getCourses(), $documentCourse->getCourses());
+    //$totalCourses = $course->getTotalCourses();
 }
 
-$totalPages = ceil($totalCourses / $perPage);
+//$totalPages = ceil($totalCourses / $perPage);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -57,7 +60,7 @@ $totalPages = ceil($totalCourses / $perPage);
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                         <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
                     </a>
                 </div>
                 <div class="flex sm:hidden   items-center">
