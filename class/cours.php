@@ -1,185 +1,40 @@
 <?php
-
 class Course {
-    private $id;
-    private $titre;
-    private $description;
-    private $contenu;
-    private $image;
-    private $video;
-    private $enseignant_id;
-    private $categorie_id;
-    private $pdo;
+    protected $id;
+    protected $titre;
+    protected $description;
+    protected $contenu;
+    protected $image;
+    protected $typeContenu;  // video ou document
+    protected $video;
+    protected $fichier_document;
+    protected $enseignant_id;
+    protected $categorie_id;
+    protected $price;
+    protected $pdo;
 
-    // Constructeur
-    public function __construct($pdo, $id = null, $titre = '', $description = '', $contenu = '', $image = null, $video = null, $enseignant_id = null, $categorie_id = null) {
+    public function __construct($pdo, $id = null, $titre = '', $description = '', $contenu = '', $image = null, $prix = 0, $typeContenu = 'video', $enseignant_id = null, $categorie_id = null) {
         $this->pdo = $pdo;
-        $this->id = $id;
         $this->titre = $titre;
         $this->description = $description;
         $this->contenu = $contenu;
         $this->image = $image;
-        $this->video = $video;
+        $this->price = $prix;
+        $this->typeContenu = $typeContenu;
         $this->enseignant_id = $enseignant_id;
         $this->categorie_id = $categorie_id;
     }
 
-    // Getters et Setters
-    public function getId() {
-        return $this->id;
+    public function addCourse($title, $description, $filePath, $imagePath, $price, $teacherId, $categoryId, $tags, $contentType) {
+        throw new Exception("Cette méthode doit être surchargée par les classes dérivées.");
     }
-
-    public function setId($id) {
-        $this->id = $id;
+    public function getCourses() {
+       
     }
-
-    public function getTitre() {
-        return $this->titre;
+    public function getCourseById($id) {
+        
     }
-
-    public function setTitre($titre) {
-        $this->titre = $titre;
-    }
-
-    public function getDescription() {
-        return $this->description;
-    }
-
-    public function setDescription($description) {
-        $this->description = $description;
-    }
-
-    public function getContenu() {
-        return $this->contenu;
-    }
-
-    public function setContenu($contenu) {
-        $this->contenu = $contenu;
-    }
-
-    public function getImage() {
-        return $this->image;
-    }
-
-    public function setImage($image) {
-        $this->image = $image;
-    }
-
-    public function getVideo() {
-        return $this->video;
-    }
-
-    public function setVideo($video) {
-        $this->video = $video;
-    }
-
-    public function getEnseignantId() {
-        return $this->enseignant_id;
-    }
-
-    public function setEnseignantId($enseignant_id) {
-        $this->enseignant_id = $enseignant_id;
-    }
-
-    public function getCategorieId() {
-        return $this->categorie_id;
-    }
-
-    public function setCategorieId($categorie_id) {
-        $this->categorie_id = $categorie_id;
-    }
-
-    // Ajouter un cours
-    public function addCourse($tags) {
-        $stmt = $this->pdo->prepare('INSERT INTO Cours (titre, description, contenu, image, video, enseignant_id, categorie_id) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$this->titre, $this->description, $this->contenu, $this->image, $this->video, $this->enseignant_id, $this->categorie_id]);
-
-        // Récupérer l'ID du dernier cours inséré
-        $cours_id = $this->pdo->lastInsertId();
-
-        // Associer les tags au cours
-        foreach ($tags as $tag_id) {
-            $stmt = $this->pdo->prepare('INSERT INTO Cours_Tags (cours_id, tag_id) VALUES (?, ?)');
-            $stmt->execute([$cours_id, $tag_id]);
-        }
-
-        return true;
-    }
-
-    // Récupérer les cours
-    public function getCoursesRand() {
-    $stmt = $this->pdo->prepare('
-        SELECT Cours.*, Utilisateur.nom AS enseignant_nom, Category.nom AS category_name, GROUP_CONCAT(Tag.nom) AS tags
-        FROM Cours
-        LEFT JOIN Category ON Cours.categorie_id = Category.id
-        LEFT JOIN Cours_Tags ON Cours.id = Cours_Tags.cours_id
-        LEFT JOIN Tag ON Cours_Tags.tag_id = Tag.id
-        LEFT JOIN Utilisateur ON Cours.user_id = Utilisateur.id
-        GROUP BY Cours.id, Utilisateur.nom, Category.nom
-        ORDER BY RAND() LIMIT 6
-    ');
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-public function getCourses($page = 1, $perPage = 6) {
-    
-    $offset = ($page - 1) * $perPage;
-
-    $stmt = $this->pdo->prepare('
-        SELECT Cours.*, Utilisateur.nom, Utilisateur.avatar AS avatar, Category.nom AS category_name, 
-        GROUP_CONCAT(Tag.nom) AS tags, COUNT(Enrollment.user_id) AS nbr_etudiants
-        FROM Cours
-        LEFT JOIN Category ON Cours.categorie_id = Category.id
-        LEFT JOIN Cours_Tags ON Cours.id = Cours_Tags.cours_id
-        LEFT JOIN Tag ON Cours_Tags.tag_id = Tag.id
-        LEFT JOIN Utilisateur ON Cours.user_id = Utilisateur.id
-        LEFT JOIN Enrollment ON Cours.id = Enrollment.cours_id
-        GROUP BY Cours.id, Utilisateur.nom, Category.nom
-        LIMIT :perPage OFFSET :offset
-    ');
-
-    // Liaison des paramètres
-    $stmt->bindParam(':perPage', $perPage, PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-public function getTotalCourses() {
-    // Calculer le nombre total de cours
-    $sql = "SELECT COUNT(*) FROM Cours";
-    $stmt = $this->pdo->query($sql);
-    return $stmt->fetchColumn();
-}
-// Récupérer un cours par son ID
-public function getCourseById($course_id) {
-    $stmt = $this->pdo->prepare('
-        SELECT 
-            Cours.*, 
-            Utilisateur.nom AS enseignant, 
-            Utilisateur.avatar AS avatar,
-            Utilisateur.bio AS bio, 
-            Category.nom AS categorie, 
-            COALESCE(Utilisateur.descpription, "") AS enseignant_description, 
-            GROUP_CONCAT(Tag.nom) AS tags, 
-            COUNT(Enrollment.user_id) AS nbr_etudiants
-        FROM Cours
-        LEFT JOIN Category ON Cours.categorie_id = Category.id
-        LEFT JOIN Cours_Tags ON Cours.id = Cours_Tags.cours_id
-        LEFT JOIN Tag ON Cours_Tags.tag_id = Tag.id
-        LEFT JOIN Utilisateur ON Cours.user_id = Utilisateur.id
-        LEFT JOIN Enrollment ON Cours.id = Enrollment.cours_id
-        WHERE Cours.id = :id
-        GROUP BY Cours.id, Utilisateur.nom, Category.nom
-    ');
-
-    $stmt->bindParam(':id', $course_id, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-
-public function searchCourses($searchTerm) {
+    public function searchCourses($searchTerm) {
     $stmt = $this->pdo->prepare('
         SELECT Cours.*, Utilisateur.nom, Utilisateur.avatar AS avatar, Category.nom AS category_name, 
         GROUP_CONCAT(Tag.nom) AS tags, COUNT(Enrollment.user_id) AS nbr_etudiants
@@ -200,15 +55,80 @@ public function searchCourses($searchTerm) {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+public function getTotalCourses() {
+    // Calculer le nombre total de cours
+    $sql = "SELECT COUNT(*) FROM Cours";
+    $stmt = $this->pdo->query($sql);
+    return $stmt->fetchColumn();
+}
+
+public function getDashboardStats($id_enseignant) {
+    // Exemple de requêtes pour récupérer les statistiques
+    $stats = [];
+
+    // Nombre total de cours pour l'enseignant spécifique
+    $stmt = $this->pdo->prepare('SELECT COUNT(*) AS total_cours FROM Cours WHERE user_id = :id_enseignant');
+    $stmt->bindValue(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
+    $stmt->execute();
+    $stats['total_cours'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_cours'];
+
+    // Nombre total d'étudiants inscrits dans les cours de cet enseignant
+    $stmt = $this->pdo->prepare('
+        SELECT COUNT(DISTINCT Enrollment.user_id) AS total_etudiants
+        FROM Enrollment
+        INNER JOIN Cours ON Cours.id = Enrollment.cours_id
+        WHERE Cours.user_id = :id_enseignant
+    ');
+    $stmt->bindValue(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
+    $stmt->execute();
+    $stats['total_etudiants'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_etudiants'];
+
+    return $stats;
+}
+
+public function getCompletionRate($id_enseignant) {
+    // Requête pour compter le nombre de cours complétés par l'enseignant spécifique
+    $stmt = $this->pdo->prepare('
+        SELECT COUNT(*) AS completed_courses 
+        FROM Enrollment
+        INNER JOIN Cours ON Cours.id = Enrollment.cours_id
+        WHERE Enrollment.status = "Complet" AND Cours.user_id = :id_enseignant
+    ');
+    $stmt->bindValue(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
+    $stmt->execute();
+    $completed = $stmt->fetch(PDO::FETCH_ASSOC)['completed_courses'];
+
+    // Requête pour compter le nombre total de cours pour l'enseignant spécifique
+    $stmt = $this->pdo->prepare('
+        SELECT COUNT(*) AS total_courses 
+        FROM Enrollment
+        INNER JOIN Cours ON Cours.id = Enrollment.cours_id
+        WHERE Cours.user_id = :id_enseignant
+    ');
+    $stmt->bindValue(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
+    $stmt->execute();
+    $total = $stmt->fetch(PDO::FETCH_ASSOC)['total_courses'];
+
+    // Éviter la division par zéro
+    if ($total == 0) {
+        return 0; // Aucun cours pour cet enseignant
+    }
+
+    // Calcul du taux de complétion
+    return round(($completed / $total) * 100, 2);
+}
 
 
 
 
-    // Supprimer un cours
-    public function deleteCourse($cours_id) {
-        $stmt = $this->pdo->prepare('DELETE FROM Cours WHERE id = ?');
-        return $stmt->execute([$cours_id]);
+public function getCoursesByEnseignant($enseignant_id) {
+        throw new Exception("Cette méthode doit être redéfinie dans les sous-classes.");
     }
 }
+
+
+
+
+
 
 ?>
