@@ -1,8 +1,10 @@
 <?php
 include('../class/db.php');
 include('../class/cours.php'); 
-
-
+//include ('../class/categorie.php');
+//Include ('../class/tag.php');
+include('../class/videoCourse.php');  
+include('../class/documentCourse.php');
 $perPage = 6;
 
 // Récupérer la page actuelle à partir de l'URL (si non spécifié, la page 1 est utilisée)
@@ -12,14 +14,16 @@ $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 $db = new Database();
 $pdo = $db->getPDO();
 
+$videoCourse = new VideoCourse($pdo);
+$documentCourse = new DocumentCourse($pdo);
 $course = new Course($pdo);
-
 if (!empty($searchTerm)) {
     $courses = $course->searchCourses($searchTerm);
     $totalCourses = count($courses);
     $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
 } else {
-    $courses = $course->getCourses($page, $perPage);
+    $videoCourses = $videoCourse->getCourses();
+    $documentCourses = $documentCourse->getCourses();
     $totalCourses = $course->getTotalCourses();
 }
 
@@ -56,7 +60,7 @@ $totalPages = ceil($totalCourses / $perPage);
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                        <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
@@ -126,24 +130,51 @@ $totalPages = ceil($totalCourses / $perPage);
             <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Cours disponibles</h2>
         
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php foreach ($courses as $course) : ?>
+            <?php foreach ($videoCourses as $coursItem): 
+                $courseDetails = $videoCourse->getCourseById($coursItem['id']); ?>
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <img src="<?= $course['image']; ?>" alt="Course thumbnail" class="w-full h-48 object-cover">
+                    <img src="<?= $coursItem['image']; ?>" alt="Course thumbnail" class="w-full h-48 object-cover">
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($course['titre']); ?></h3>
-                        <p class="text-gray-600 mb-4"><?= htmlspecialchars($course['description']); ?></p>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($coursItem['titre']); ?></h3>
+                        <p class="text-gray-600 mb-4"><?= htmlspecialchars($coursItem['description']); ?></p>
                         <div class="flex items-center mb-4">
-                            <img src="<?= $course['avatar']; ?>" alt="Teacher" class="w-10 h-10 rounded-full mr-3">
-                            <span class="text-sm text-gray-700">Par <?= htmlspecialchars($course['nom']); ?></span>
+                            <img src="../uploads/avatars/<?=$coursItem['avatar']; ?>" alt="Teacher" class="w-10 h-10 rounded-full mr-3">
+                            <span class="text-sm text-gray-700">Par <?= htmlspecialchars($coursItem['nom']); ?></span>
                         </div>
                         <div class="flex justify-between items-center mb-4">
-                            <span class="text-sm text-gray-500">Catégorie: <?= htmlspecialchars($course['category_name']); ?></span>
-                            <span class="text-sm text-gray-500"><?= htmlspecialchars($course['nbr_etudiants']); ?> étudiants</span>
+                            <span class="text-sm text-gray-500">Catégorie: <?= htmlspecialchars($coursItem['category_name']); ?></span>
+                            <span class="text-sm text-gray-500"><?= htmlspecialchars($coursItem['nbr_etudiants']); ?> étudiants</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-youdemy font-bold text-xl"> <?= htmlspecialchars($course['prix']); ?>$</span>
+                            <span class="text-youdemy font-bold text-xl"> <?= htmlspecialchars($coursItem['prix']); ?>$</span>
                             <div class="flex justify-center text-xl">
-                            <a href="./coursdetails.php?id=<?php echo $course['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
+                            <a href="./coursdetails.php?id=<?php echo $coursItem['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
+                                En savoir plus
+                            </a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+                <?php foreach ($documentCourses as $coursItem): 
+                    $courseDetails = $documentCourse->getCourseById($coursItem['id']); ?>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="<?= $coursItem['image']; ?>" alt="Course thumbnail" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($coursItem['titre']); ?></h3>
+                        <p class="text-gray-600 mb-4"><?= htmlspecialchars($coursItem['description']); ?></p>
+                        <div class="flex items-center mb-4">
+                            <img src="<?= $coursItem['avatar']; ?>" alt="Teacher" class="w-10 h-10 rounded-full mr-3">
+                            <span class="text-sm text-gray-700">Par <?= htmlspecialchars($coursItem['nom']); ?></span>
+                        </div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm text-gray-500">Catégorie: <?= htmlspecialchars($coursItem['category_name']); ?></span>
+                            <span class="text-sm text-gray-500"><?= htmlspecialchars($coursItem['nbr_etudiants']); ?> étudiants</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-youdemy font-bold text-xl"> <?= htmlspecialchars($coursItem['prix']); ?>$</span>
+                            <div class="flex justify-center text-xl">
+                            <a href="./coursdetails.php?id=<?php echo $coursItem['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
                                 En savoir plus
                             </a>
                         </div>
