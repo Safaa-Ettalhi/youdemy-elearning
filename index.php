@@ -3,13 +3,17 @@ include('./class/db.php');
 include('./class/cours.php');
 include('./class/categorie.php');
 include('./class/enseignent.php');
-
+include('./class/videoCourse.php');  // Inclure la classe VideoCourse
+include('./class/documentCourse.php');  // Inclure la classe DocumentCourse
 $db = new Database();
 $pdo = $db->getPDO();
 
-$course = new Course($pdo);
-$courses = $course->getCoursesRand();
+//$course = new Course($pdo);
+//$courses = $course->getCourses();
 
+$videoCourse = new VideoCourse($pdo);
+$documentCourse = new DocumentCourse($pdo);
+$courses = array_merge($videoCourse->getCourses(), $documentCourse->getCourses());
 $category = new Category($pdo);
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -54,7 +58,7 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                      <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
