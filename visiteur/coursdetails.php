@@ -1,16 +1,28 @@
 <?php
-include('../class/db.php'); // Inclure la connexion à la base de données
-include('../class/cours.php'); // Inclure la connexion PDO
-
+include('../class/db.php'); 
+include('../class/cours.php'); 
+include('../class/videoCourse.php');  
+include('../class/documentCourse.php');  
 // Initialisation
 $db = new Database();
 $pdo = $db->getPDO();
-$courseModel = new Course($pdo);
+//$courseModel = new Course($pdo);
 
 // Récupération du cours par ID (exemple ID=1, peut être dynamique via GET)
 $course_id = isset($_GET['id']) ? intval($_GET['id']) : 1;
-$course = $courseModel->getCourseById($course_id);
+//$course = $courseModel->getCourseById($course_id);
+$videoCourse = new VideoCourse($pdo);
+$documentCourse = new DocumentCourse($pdo);
+$course = null;
+if ($course_id > 0) {
+    // D'abord essayer de récupérer un cours vidéo
+    $course = $videoCourse->getCourseById($course_id);
 
+    // Si aucun cours vidéo n'est trouvé, essayer de récupérer un cours document
+    if (!$course) {
+        $course = $documentCourse->getCourseById($course_id);
+    }
+}
 if (!$course) {
     echo "Cours introuvable.";
     exit;
@@ -46,7 +58,7 @@ if (!$course) {
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                        <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
@@ -68,10 +80,10 @@ if (!$course) {
                 </div>
                 <div class="hidden sm:flex sm:items-center sm:justify-center sm:gap-2">
                 <button class="bg-white hover:bg-orange-500 hover:text-white text-l text-orange-400 border border-orange-400 px-6 py-2 rounded-full transition duration-300">
-                    <a href="./login.html">login</a>
+                    <a href="../login.php">login</a>
                 </button>
                 <button class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
-                   <a href="./register.html">s'inscrire</a> 
+                   <a href="../register.php">s'inscrire</a> 
                 </button></div>
             </div>
         </div>
@@ -87,10 +99,10 @@ if (!$course) {
             <a href="index.php" class="block text-gray-600 hover:text-gray-900 py-2">Contact</a>
             
             <button class="w-full bg-white hover:bg-orange-500 hover:text-white text-l text-orange-400 border border-orange-400 px-6 py-2 rounded-full transition duration-300 mt-4">
-                <a href="./register.html">s'inscrire</a>
+                <a href="../register.php">s'inscrire</a>
             </button>
             <button class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 mt-4">
-                <a href="./login.html">login</a>
+                <a href="../login.php">login</a>
             </button>
         </div>
     </div>
@@ -98,8 +110,8 @@ if (!$course) {
     <!-- Course Header -->
     <header class="bg-gray-800 text-white py-16 pt-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-bold mb-4"><?= htmlspecialchars($course['titre']); ?></h1>
-            <p class="text-xl mb-6"><?= htmlspecialchars($course['description']); ?></p>
+            <h1 class="text-4xl font-bold mb-8"><?= htmlspecialchars($course['titre']); ?></h1>
+            
             
             <div class="flex items-center">
                 <img src="<?= htmlspecialchars($course['avatar']); ?>" alt="<?= htmlspecialchars($course['enseignant']); ?>" class="w-12 h-12 rounded-full mr-4">
@@ -118,7 +130,7 @@ if (!$course) {
             <div class="lg:col-span-2">
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold mb-4">Contenu du cours</h2>
-                    <p><?= nl2br(htmlspecialchars($course['contenu'])); ?></p>
+                    <p class="text-lg mb-6"><?= htmlspecialchars($course['description']); ?></p>
                 </div>
             </div>
             
