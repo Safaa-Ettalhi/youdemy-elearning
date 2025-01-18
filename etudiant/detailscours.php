@@ -1,6 +1,8 @@
 <?php
 include('../class/db.php'); 
 include('../class/cours.php');
+include('../class/videoCourse.php');  
+include('../class/documentCourse.php'); 
 session_start();
 
 // Vérifiez si l'utilisateur est connecté
@@ -14,12 +16,21 @@ $user_id = $_SESSION['id'];
 // Initialisation
 $db = new Database();
 $pdo = $db->getPDO();
-$courseModel = new Course($pdo);
-
-// Récupération du cours par ID (exemple ID=1, peut être dynamique via GET)
 $course_id = isset($_GET['id']) ? intval($_GET['id']) : 1;
-$course = $courseModel->getCourseById($course_id);
 
+$videoCourse = new VideoCourse($pdo);
+$documentCourse = new DocumentCourse($pdo);
+$course = null;
+
+if ($course_id > 0) {
+    
+    $course = $videoCourse->getCourseById($course_id);
+
+    
+    if (!$course) {
+        $course = $documentCourse->getCourseById($course_id);
+    }
+}
 if (!$course) {
     echo "Cours introuvable.";
     exit;
@@ -55,7 +66,7 @@ if (!$course) {
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                         <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
                     </a>
                 </div>
                 <div class="flex sm:hidden   items-center">
@@ -88,8 +99,8 @@ if (!$course) {
     <!-- Course Header -->
     <header class="bg-gray-800 text-white py-16 pt-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-bold mb-4"><?= htmlspecialchars($course['titre']); ?></h1>
-            <p class="text-xl mb-6"><?= htmlspecialchars($course['description']); ?></p>
+            <h1 class="text-4xl font-bold mb-8"><?= htmlspecialchars($course['titre']); ?></h1>
+            
             
             <div class="flex items-center">
                 <img src="<?= htmlspecialchars($course['avatar']); ?>" alt="<?= htmlspecialchars($course['enseignant']); ?>" class="w-12 h-12 rounded-full mr-4">
@@ -108,7 +119,7 @@ if (!$course) {
             <div class="lg:col-span-2">
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold mb-4">Contenu du cours</h2>
-                    <p><?= nl2br(htmlspecialchars($course['contenu'])); ?></p>
+                    <p class="text-xl mb-6"><?= htmlspecialchars($course['description']); ?></p>
                 </div>
             </div>
             
@@ -142,7 +153,7 @@ if (!$course) {
                         </div>
                     </div>
                     <p class="mb-4">
-                    <?= htmlspecialchars($course['bio']); ?>
+                    <?= htmlspecialchars($course['description']); ?>
                     </p>
                 </div>
     </main>
