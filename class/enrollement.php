@@ -6,7 +6,7 @@ class Enrollment {
     private $cours_id;
     private $date_inscription;
 
-    // Constructeur pour initialiser les propriétés
+    
     public function __construct($pdo, $etudiant_id = null, $cours_id = null) {
         $this->pdo = $pdo;
         $this->etudiant_id = $etudiant_id;
@@ -14,7 +14,7 @@ class Enrollment {
         $this->date_inscription = date('Y-m-d');
     }
 
-    // Inscrire un étudiant à un cours
+    
     public function addEnrollment($course_id, $user_id) {
         $stmt = $this->pdo->prepare("INSERT INTO Enrollment (etudiant_id, cours_id) VALUES (:user_id,:course_id)");
         $stmt->bindParam(':user_id', $user_id);
@@ -34,7 +34,7 @@ class Enrollment {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Récupérer les cours auxquels un étudiant est inscrit
+    
     public function getEnrollmentsByStudent($etudiant_id) {
     $stmt = $this->pdo->prepare('
         SELECT 
@@ -54,7 +54,7 @@ class Enrollment {
 }
 
 
-    // Récupérer les étudiants inscrits à un cours
+    
     public function getEnrollmentsByCourse($cours_id) {
     $stmt = $this->pdo->prepare('
         SELECT Utilisateur.*, Enrollment.date_inscription
@@ -70,24 +70,24 @@ class Enrollment {
 
 public function updateEnrollmentStatus($coursId, $userId, $newStatus = 'Complet') {
         try {
-            // Préparer la requête
+            
             $query = "UPDATE Enrollment SET status = :status WHERE cours_id = :coursId AND user_id = :userId";
             $stmt = $this->pdo->prepare($query);
 
-            // Associer les paramètres
+            
             $stmt->bindParam(':status', $newStatus, PDO::PARAM_STR);
             $stmt->bindParam(':coursId', $coursId, PDO::PARAM_INT);
             $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 
-            // Exécuter la requête
+            
             return $stmt->execute();
         } catch (PDOException $e) {
-            // Afficher un message d'erreur pour le débogage (à éviter en production)
+            
             error_log("Erreur lors de la mise à jour du statut : " . $e->getMessage());
             return false;
         }
     }
-    // Définir l'ID de l'étudiant et du cours pour ajouter une inscription
+    
     public function setEnrollmentDetails($etudiant_id, $cours_id) {
         $this->etudiant_id = $etudiant_id;
         $this->cours_id = $cours_id;
