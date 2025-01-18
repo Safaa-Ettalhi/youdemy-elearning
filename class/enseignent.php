@@ -5,17 +5,6 @@ class Enseignant extends User {
     public function __construct($id, $nom, $email, $mot_de_passe, $pdo) {
         parent::__construct($id, $nom, $email, $mot_de_passe, 'Enseignant', $pdo);
     }
-
-    public function addCourse($titre, $description, $contenu, $image, $video, $fichier_document, $categorie_id) {
-        $stmt = $this->pdo->prepare('INSERT INTO Cours (titre, description, contenu, image, video, fichier_document, enseignant_id, categorie_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-        return $stmt->execute([$titre, $description, $contenu, $image, $video, $fichier_document, $this->id, $categorie_id]);
-    }
-
-    public function getCourses() {
-        $stmt = $this->pdo->prepare('SELECT * FROM Cours WHERE enseignant_id = ?');
-        $stmt->execute([$this->id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
     public function getEnseignantPaginated($pageE, $perPage) {
     $offset = ($pageE - 1) * $perPage;
 
