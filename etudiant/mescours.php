@@ -53,7 +53,7 @@ $mescours = $enrollment->getEnrollmentsByStudent($etudiant_id);
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                         <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
                     </a>
                 </div>
                 <div class="flex sm:hidden   items-center">
@@ -90,7 +90,7 @@ $mescours = $enrollment->getEnrollmentsByStudent($etudiant_id);
             <?php if (count($mescours) > 0): ?>
                 <?php foreach ($mescours as $cours): ?>
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-sTTYqZMOrwDbqmz4PdcPzaCjaoKCCK.png" alt="Course thumbnail" class="w-full h-48 object-cover">
+                        <img src="<?php echo htmlspecialchars($cours['image']); ?>" alt="Course thumbnail" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="text-xl font-semibold mb-2"><?php echo htmlspecialchars($cours['titre']); ?></h3>
                             <div class="flex items-center mb-4">
