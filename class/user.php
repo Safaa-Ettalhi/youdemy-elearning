@@ -26,7 +26,7 @@ class User {
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-        // Retourner un message d'erreur si l'email ou le nom d'utilisateur existe déjà
+
         return "<div class='text-red-500 p-3 mb-4 border border-red-300 bg-red-100 rounded'>L'email existe déjà.</div>";
     } else {
         
@@ -54,6 +54,7 @@ class User {
             $_SESSION['email'] = $email;
             $_SESSION['nom'] = $name;
             $_SESSION['role'] = $role;
+            $_SESSION['statut']=$statut;
 
             if ($role == 'Etudiant') {
                 header('Location: ../etudiant/catalogecours.php');
@@ -84,7 +85,7 @@ class User {
             $_SESSION['nom'] = $user['nom'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
-
+            $_SESSION['statut']=$user['statut'];
             return new self($user['id'], $user['nom'], $user['email'], $user['mot_de_passe'], $user['role'], $pdo);
         }
 
@@ -100,7 +101,7 @@ class User {
         exit();
     }
 
-    // Getter methods
+    
     public function getId() {
         return $this->id;
     }
