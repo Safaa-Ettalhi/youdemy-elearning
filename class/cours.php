@@ -5,7 +5,7 @@ class Course {
     protected $description;
     protected $contenu;
     protected $image;
-    protected $typeContenu;  // video ou document
+    protected $typeContenu;  
     protected $video;
     protected $fichier_document;
     protected $enseignant_id;
@@ -28,12 +28,80 @@ class Course {
     public function addCourse($title, $description, $filePath, $imagePath, $price, $teacherId, $categoryId, $tags, $contentType) {
         throw new Exception("Cette méthode doit être surchargée par les classes dérivées.");
     }
+    public function updateCourse($course_id, $title, $description, $filePath, $imagePath, $price, $teacherId, $category_id, $tags, $content_type) {
+    try {
+        // Vérifier si le cours existe
+        $stmt = $this->pdo->prepare("SELECT user_id FROM cours WHERE id = ? ");
+        $stmt->execute([$course_id]);
+        $course = $stmt->fetch();
+
+        if (!$course) {
+            throw new Exception("Cours introuvable.");
+        }
+
+       
+        var_dump($course_id, $teacherId, $course['user_id']); 
+
+        
+        if ((int)$teacherId !== (int)$course['user_id']) {
+            throw new Exception("Vous n'êtes pas autorisé à modifier ce cours.");
+        }
+     
+        $stmt = $this->pdo->prepare("
+            UPDATE cours
+            SET titre = ?, description = ?, fichier = ?, image = ?, prix = ?, categorie_id = ?, typeContenu = ?
+            WHERE id = ?
+        ");
+        $stmt->execute([$title, $description, $filePath, $imagePath, $price, $category_id, $content_type, $course_id]);
+
+        $stmt = $this->pdo->prepare("DELETE FROM cours_tags WHERE cours_id = ?");
+        $stmt->execute([$course_id]);
+        if (!empty($tags)) {
+            $stmt = $this->pdo->prepare("INSERT INTO cours_tags (cours_id, tag_id) VALUES (?, ?)");
+            foreach ($tags as $tag_id) {
+                $stmt->execute([$course_id, $tag_id]);
+            }
+        }
+    } catch (Exception $e) {
+       
+        throw new Exception($e->getMessage());
+    }
+}
+
+
+
     public function getCourses() {
        
     }
-    public function getCourseById($id) {
-        
+    public function getCourseById($course_id) {
+    
+    $stmt = $this->pdo->prepare('
+       SELECT 
+        c.*, 
+        t.nom AS tag_nom,
+        t.id AS tag_id
+    FROM 
+        Cours c
+    JOIN 
+        Cours_Tags ct ON c.id = ct.cours_id
+    JOIN 
+        Tag t ON ct.tag_id = t.id
+    WHERE 
+        c.id = :course_id
+    ');
+
+    $stmt->bindParam(':course_id', $course_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $course = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$course) {
+        throw new Exception("Cours introuvable avec l'ID fourni.");
     }
+
+    return $course;
+}
+
     public function searchCourses($searchTerm) {
     $stmt = $this->pdo->prepare('
         SELECT Cours.*, Utilisateur.nom, Utilisateur.avatar AS avatar, Category.nom AS category_name, 
@@ -56,23 +124,21 @@ class Course {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 public function getTotalCourses() {
-    // Calculer le nombre total de cours
+    
     $sql = "SELECT COUNT(*) FROM Cours";
     $stmt = $this->pdo->query($sql);
     return $stmt->fetchColumn();
 }
 
 public function getDashboardStats($id_enseignant) {
-    // Exemple de requêtes pour récupérer les statistiques
+    
     $stats = [];
-
-    // Nombre total de cours pour l'enseignant spécifique
     $stmt = $this->pdo->prepare('SELECT COUNT(*) AS total_cours FROM Cours WHERE user_id = :id_enseignant');
     $stmt->bindValue(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
     $stmt->execute();
     $stats['total_cours'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_cours'];
 
-    // Nombre total d'étudiants inscrits dans les cours de cet enseignant
+   
     $stmt = $this->pdo->prepare('
         SELECT COUNT(DISTINCT Enrollment.user_id) AS total_etudiants
         FROM Enrollment
@@ -87,7 +153,7 @@ public function getDashboardStats($id_enseignant) {
 }
 
 public function getCompletionRate($id_enseignant) {
-    // Requête pour compter le nombre de cours complétés par l'enseignant spécifique
+    
     $stmt = $this->pdo->prepare('
         SELECT COUNT(*) AS completed_courses 
         FROM Enrollment
@@ -98,7 +164,7 @@ public function getCompletionRate($id_enseignant) {
     $stmt->execute();
     $completed = $stmt->fetch(PDO::FETCH_ASSOC)['completed_courses'];
 
-    // Requête pour compter le nombre total de cours pour l'enseignant spécifique
+    
     $stmt = $this->pdo->prepare('
         SELECT COUNT(*) AS total_courses 
         FROM Enrollment
@@ -109,26 +175,18 @@ public function getCompletionRate($id_enseignant) {
     $stmt->execute();
     $total = $stmt->fetch(PDO::FETCH_ASSOC)['total_courses'];
 
-    // Éviter la division par zéro
+    
     if ($total == 0) {
-        return 0; // Aucun cours pour cet enseignant
+        return 0; 
     }
 
-    // Calcul du taux de complétion
+    
     return round(($completed / $total) * 100, 2);
 }
-
-
-
 
 public function getCoursesByEnseignant($enseignant_id) {
         throw new Exception("Cette méthode doit être redéfinie dans les sous-classes.");
     }
 }
-
-
-
-
-
 
 ?>
