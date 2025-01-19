@@ -28,7 +28,7 @@ $documentCourse = new DocumentCourse($pdo);
 $videoCourses = $videoCourse->getCoursesByEnseignant($enseignant_id);
 $documentCourses = $documentCourse->getCoursesByEnseignant($enseignant_id);
 $course = new Course($pdo);
-
+//$courses = $course->getCourseById();
 // Récupérer les statistiques
 $stats = $course->getDashboardStats($id_enseignant);
 $completionRate = $course->getCompletionRate($id_enseignant);
@@ -194,7 +194,7 @@ $tags = $tag->getTags();
                         <tbody class="bg-white divide-y divide-gray-200">
                             <!-- Boucle sur les cours vidéo -->
                             <?php foreach ($videoCourses as $coursItem): 
-        $courseDetails = $videoCourse->getCourseById($coursItem['id']); ?>
+                            $courseDetails = $videoCourse->getCourseById($coursItem['id']); ?>
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
@@ -220,13 +220,14 @@ $tags = $tag->getTags();
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <!-- Bouton pour afficher les détails -->
-                                    <button onclick='openModal(<?php echo json_encode($courseDetails); ?>)'
-                                        class="text-orange-600 hover:text-orange-900 mr-4">
+                                    <button class="text-orange-600 hover:text-orange-900 mr-4">
+                                    <a href="./action/modifier_cours.php?id=<?= $coursItem['id'] ?>">
                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                             </path>
                                         </svg>
+                                        </a>
                                     </button>
                                     <!-- Bouton de suppression -->
                                     <button class="text-red-600 hover:text-red-900">
@@ -244,7 +245,7 @@ $tags = $tag->getTags();
 
                             <!-- Boucle sur les cours document -->
                             <?php foreach ($documentCourses as $coursItem): 
-        $courseDetails = $documentCourse->getCourseById($coursItem['id']); ?>
+                            $courseDetails = $documentCourse->getCourseById($coursItem['id']); ?>
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
@@ -270,13 +271,15 @@ $tags = $tag->getTags();
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <!-- Bouton pour afficher les détails -->
-                                    <button onclick='openModal(<?php echo json_encode($courseDetails); ?>)'
-                                        class="text-orange-600 hover:text-orange-900 mr-4">
+                                     
+                                    <button onclick='openUpdateModal()' class="text-orange-600 hover:text-orange-900 mr-4">
+                                    <a href="./action/modifier_cours.php?id=<?= $coursItem['id'] ?>">
                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                             </path>
                                         </svg>
+                                        </a>
                                     </button>
                                     <!-- Bouton de suppression -->
                                     <button class="text-red-600 hover:text-red-900">
@@ -437,55 +440,7 @@ $tags = $tag->getTags();
 
             </div>
         </div>
-        <!-- update -->
-        <div id="courseModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
-                <div class="flex justify-between items-center pb-3">
-                    <h3 class="text-xl font-semibold text-gray-900">Détails du cours</h3>
-                    <button onclick="closeModalF()" class="text-gray-400 hover:text-gray-500">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
 
-                <div class="mt-4">
-                    <div class="space-y-6">
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500">Titre</h4>
-                            <p id="modalTitle" class="mt-1 text-sm text-gray-900"></p>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500">Description</h4>
-                            <p id="modalDescription" class="mt-1 text-sm text-gray-900"></p>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500">Catégorie</h4>
-                            <span id="modalCategory"
-                                class="mt-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"></span>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500">Tags</h4>
-                            <div id="modalTags" class="mt-1 flex flex-wrap gap-2"></div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500">Vidéo</h4>
-                            <div id="modalVideo" class="mt-2"></div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-500">Document</h4>
-                            <div id="modalDocument" class="mt-2"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </main>
     <script src="../scriptF.js"></script>
