@@ -49,7 +49,7 @@ class Course {
      
         $stmt = $this->pdo->prepare("
             UPDATE cours
-            SET titre = ?, description = ?, fichier = ?, image = ?, prix = ?, categorie_id = ?, typeContenu = ?
+            SET titre = ?, description = ?, fichier_document = ?, image = ?, prix = ?, categorie_id = ?, typeContenu = ?
             WHERE id = ?
         ");
         $stmt->execute([$title, $description, $filePath, $imagePath, $price, $category_id, $content_type, $course_id]);
@@ -124,7 +124,7 @@ class Course {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 public function getTotalCourses() {
-    
+   
     $sql = "SELECT COUNT(*) FROM Cours";
     $stmt = $this->pdo->query($sql);
     return $stmt->fetchColumn();
@@ -137,8 +137,6 @@ public function getDashboardStats($id_enseignant) {
     $stmt->bindValue(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
     $stmt->execute();
     $stats['total_cours'] = $stmt->fetch(PDO::FETCH_ASSOC)['total_cours'];
-
-   
     $stmt = $this->pdo->prepare('
         SELECT COUNT(DISTINCT Enrollment.user_id) AS total_etudiants
         FROM Enrollment
@@ -153,7 +151,6 @@ public function getDashboardStats($id_enseignant) {
 }
 
 public function getCompletionRate($id_enseignant) {
-    
     $stmt = $this->pdo->prepare('
         SELECT COUNT(*) AS completed_courses 
         FROM Enrollment
@@ -163,8 +160,6 @@ public function getCompletionRate($id_enseignant) {
     $stmt->bindValue(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
     $stmt->execute();
     $completed = $stmt->fetch(PDO::FETCH_ASSOC)['completed_courses'];
-
-    
     $stmt = $this->pdo->prepare('
         SELECT COUNT(*) AS total_courses 
         FROM Enrollment
@@ -174,19 +169,32 @@ public function getCompletionRate($id_enseignant) {
     $stmt->bindValue(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
     $stmt->execute();
     $total = $stmt->fetch(PDO::FETCH_ASSOC)['total_courses'];
-
-    
     if ($total == 0) {
         return 0; 
     }
 
-    
     return round(($completed / $total) * 100, 2);
 }
 
 public function getCoursesByEnseignant($enseignant_id) {
-        throw new Exception("Cette méthode doit être redéfinie dans les sous-classes.");
+        
     }
+
+
+public function deleteCourse($courseId) {
+        try {
+            
+            $deleteStmt = $this->pdo->prepare("DELETE FROM Cours WHERE id = ?");
+            $deleteStmt->execute([$courseId]);
+
+            if ($deleteStmt->rowCount() == 0) {
+                throw new Exception("Aucun cours trouvé avec l'ID fourni.");
+            }
+        } catch (Exception $e) {
+           
+            throw new Exception("Erreur lors de la suppression du cours : " . $e->getMessage());
+        }
+    }    
 }
 
 ?>
