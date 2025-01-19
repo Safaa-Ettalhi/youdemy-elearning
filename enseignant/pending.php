@@ -31,56 +31,28 @@
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
                     <a href="#" class="flex-shrink-0">
-                        <img src="./SAFAA BB.svg" alt="Safaa Ettalhi" >
+                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
                     <!-- Burger Icon for Mobile -->
-                    <button id="burger-icon" class="text-gray-600 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
+                    <button id="burger-icon"
+                        class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
+                        <a href="../deconnecter.php">Deconnecter</a>
                     </button>
                 </div>
-                <div class="hidden sm:flex sm:items-center  sm:justify-center sm:space-x-8  text-xl" id="menu">
-                    <a href="../index.php" class="text-gray-600 hover:text-gray-900">Accueil</a>
-                    <a href="../cours.php" class="text-gray-600 hover:text-gray-900">Cours</a>
-                    <a href="../index.php" class="text-gray-600 hover:text-gray-900">Mentors</a>
-                    <a href="../index.php" class="text-gray-600 hover:text-gray-900">Blog</a>
-                    <a href="../index.php" class="text-gray-600 hover:text-gray-900">Contact</a>
-                    
-                    
+
+                <div class="hidden sm:flex sm:items-center sm:justify-center sm:gap-2">
+
+                    <button
+                        class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
+                        <a href="../deconnecter.php">Deconnecter</a>
+                    </button>
                 </div>
-                <!-- <div class="hidden sm:flex sm:items-center sm:justify-center sm:gap-2">
-                <button class="bg-white hover:bg-orange-500 hover:text-white text-l text-orange-400 border border-orange-400 px-6 py-2 rounded-full transition duration-300">
-                    <a href="./login.html">login</a>
-                </button>
-                <button class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
-                   <a href="./register.html">s'inscrire</a> 
-                </button></div> -->
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Menu (Hidden Initially) -->
-    <div id="mobile-menu" class="bg-white shadow-lg absolute w-full left-0 top-20 z-50 hidden">
-        <div class="px-6 py-4">
-            <a href="../index.php" class="block text-gray-600 hover:text-gray-900 py-2">Accueil</a>
-            <a href="../cours.php" class="block text-gray-600 hover:text-gray-900 py-2">Cours</a>
-            <a href="../index.php" class="block text-gray-600 hover:text-gray-900 py-2">Mentors</a>
-            <a href="../index.php" class="block text-gray-600 hover:text-gray-900 py-2">Blog</a>
-            <a href="../index.php" class="block text-gray-600 hover:text-gray-900 py-2">Contact</a>
-            
-            <!-- <button class="w-full bg-white hover:bg-orange-500 hover:text-white text-l text-orange-400 border border-orange-400 px-6 py-2 rounded-full transition duration-300 mt-4">
-                <a href="./register.html">s'inscrire</a>
-            </button>
-            <button class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 mt-4">
-                <a href="./login.html">login</a>
-            </button> -->
-        </div>
-    </div>
-
-        <!-- Hero Section -->
         <section class="hero flex pt-20 flex-row items-center justify-center mt-24">
             <div class="mb-6">
                 <img src="./pending-approval_6cdu.png" alt="Access Denied" height="400px" width="400px"
