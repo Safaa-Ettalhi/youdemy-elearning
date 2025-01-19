@@ -13,8 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'];
     $categoryId = $_POST['category'];
     $contentType = $_POST['content-type'];
-    $price = $_POST['price']; // Prix du cours
-    $tags = isset($_POST['tags']) ? explode(',', $_POST['tags'][0]) : [];  // Transforme la chaîne en tableau
+    $price = $_POST['price']; 
+    $tags = isset($_POST['tags']) ? explode(',', $_POST['tags'][0]) : []; 
     $teacherId = $_SESSION['id'];
 var_dump($tags);
     
