@@ -1,0 +1,5 @@
+# Forcer les fichiers PHP à être détectés comme PHP
+*.php linguist-language=PHP
+
+# Ignorer les fichiers détectés comme Hack
+*.hack linguist-detectable=false
