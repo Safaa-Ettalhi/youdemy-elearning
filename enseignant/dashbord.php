@@ -11,7 +11,7 @@ if (!isset($_SESSION['id'])) {
     header('Location: ../login.php');
     exit();
 }
-$status = $_SESSION['statut']; // Remplacez cela par la méthode appropriée pour récupérer le statut
+$status = $_SESSION['statut']; 
 $id_enseignant=$_SESSION['id'];
 if ($status === 'En cours') {
     header('Location: pending.php');
@@ -28,11 +28,8 @@ $documentCourse = new DocumentCourse($pdo);
 $videoCourses = $videoCourse->getCoursesByEnseignant($enseignant_id);
 $documentCourses = $documentCourse->getCoursesByEnseignant($enseignant_id);
 $course = new Course($pdo);
-//$courses = $course->getCourseById();
-// Récupérer les statistiques
 $stats = $course->getDashboardStats($id_enseignant);
 $completionRate = $course->getCompletionRate($id_enseignant);
-//$totalCours = $course->getTotalCourses($id_enseignant);
 
 $category = new Category($pdo);
 $tag = new Tag($pdo);
@@ -54,7 +51,6 @@ $tags = $tag->getTags();
 
 <body class="min-h-screen bg-gray-100">
 
-    <!-- Header -->
     <nav class="fixed w-full bg-white/95 backdrop-blur-sm z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
@@ -83,9 +79,8 @@ $tags = $tag->getTags();
     </nav>
     <h1 class="text-3xl pt-36 text-center font-bold">Tableau de bord Enseignant</h1>
 
-    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Stats Cards -->
+
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8">
             <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="p-5">
