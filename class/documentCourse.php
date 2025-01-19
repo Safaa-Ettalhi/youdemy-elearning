@@ -4,7 +4,6 @@ class DocumentCourse extends Course {
         parent::__construct($pdo, null, $titre, $description, $contenu, $image, $prix, 'document', $enseignant_id, $categorie_id);
     }
     public function addCourse($title, $description, $filePath, $imagePath, $price, $teacherId, $categoryId, $tags, $contentType) {
-    
     $sql = "INSERT INTO cours (titre, description, fichier_document, image, prix, user_id, categorie_id, typeContenu)
             VALUES (:title, :description, :file_path, :image_path, :price, :user_id, :categorie_id, :typeContenu)";
     
@@ -18,11 +17,8 @@ class DocumentCourse extends Course {
     $stmt->bindParam(':categorie_id', $categoryId);
     $stmt->bindParam(':typeContenu', $contentType);
     $stmt->execute();
-    
-    
     $courseId = $this->pdo->lastInsertId();
 
-   
     if (!empty($tags)) {
         foreach ($tags as $tag) {
             $tagQuery = "INSERT INTO cours_tags (cours_id, tag_id) VALUES (:course_id, :tag_id)";
@@ -38,7 +34,6 @@ class DocumentCourse extends Course {
 
 
     public function getCourses() {
-    
     $stmt = $this->pdo->prepare("
         SELECT Cours.*, 
             Utilisateur.nom AS nom, 
@@ -81,11 +76,7 @@ class DocumentCourse extends Course {
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-    
-    public function displayContent() {
-        return "<a href='{$this->fichier_document}'>Télécharger le document</a>";
-    }
+}  
     public function getCoursesByEnseignant($enseignant_id) {
         
         $stmt = $this->pdo->prepare("SELECT c.*, cat.nom AS categorie, 
