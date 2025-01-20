@@ -3,22 +3,20 @@ include('./class/db.php');
 include('./class/cours.php');
 include('./class/categorie.php');
 include('./class/enseignent.php');
-include('./class/videoCourse.php');  // Inclure la classe VideoCourse
-include('./class/documentCourse.php');  // Inclure la classe DocumentCourse
+include('./class/videoCourse.php');  
+include('./class/documentCourse.php'); 
 $db = new Database();
 $pdo = $db->getPDO();
-
-//$course = new Course($pdo);
-//$courses = $course->getCourses();
+$cours = new Course($pdo);
 
 $videoCourse = new VideoCourse($pdo);
 $documentCourse = new DocumentCourse($pdo);
 $courses = array_merge($videoCourse->getCourses(), $documentCourse->getCourses());
+$coursI = $cours->getCourses() ;
 $category = new Category($pdo);
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
-// Récupérer les catégories pour la page actuelle
 $categories = $category->getCategories();
 
 $enseignant = new Enseignant(0, '', '', '', $pdo);
@@ -52,7 +50,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
     </script>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="fixed w-full bg-white/95 backdrop-blur-sm z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
@@ -62,7 +59,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
-                    <!-- Burger Icon for Mobile -->
                     <button id="burger-icon" class="text-gray-600 focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -88,8 +84,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             </div>
         </div>
     </nav>
-
-    <!-- Mobile Menu (Hidden Initially) -->
     <div id="mobile-menu" class="bg-white shadow-lg absolute w-full left-0 top-20 z-50 hidden">
         <div class="px-6 py-4">
             <a href="#Accueil" class="block text-gray-600 hover:text-gray-900 py-2">Accueil</a>
@@ -106,16 +100,12 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             </button>
         </div>
     </div>
-
-    <!-- Hero Section -->
     <sectuion class="min-h-screen" id="Accueil">
         <div class="grid lg:grid-cols-2 min-h-screen">
-            <!-- Left Image Section -->
+            
             <div class="relative h-[50vh] lg:h-screen">
                 <img src="hero-img.png" alt="Student learning online" class="w-full h-full object-cover">
             </div>
-
-            <!-- Right Content Section -->
             <div class="bg-gradient-to-br from-slate-800 to-slate-900 flex items-center px-8 py-16 lg:py-0">
                 <div class="max-w-xl mx-auto lg:mx-0">
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
@@ -134,7 +124,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
 
     <section class="py-20 px-4">
         <div class="max-w-7xl mx-auto">
-            <!-- Section Header -->
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">Apprendre de nouvelles compétences</h2>
                 <p class="text-gray-600 text-xl max-w-2xl mx-auto">
@@ -142,9 +131,7 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                 </p>
             </div>
 
-            <!-- Features Grid -->
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Learn Anything Card -->
                 <div class="bg-white p-8 rounded-lg shadow-lg text-center transform transition duration-300 hover:scale-105 hover:shadow-2xl">
                     <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="ri-edit-line text-5xl text-orange-400"></i>
@@ -155,7 +142,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                     </p>
                 </div>
 
-                <!-- Large Collection Card -->
                 <div class="bg-white p-8 rounded-lg shadow-lg text-center transform transition duration-300 hover:scale-105 hover:shadow-2xl">
                     <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="ri-layout-grid-line text-5xl text-orange-400"></i>
@@ -166,7 +152,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                     </p>
                 </div>
 
-                <!-- Certified Instructors Card -->
                 <div class="bg-white p-8 rounded-lg shadow-lg text-center transform transition duration-300 hover:scale-105 hover:shadow-2xl">
                     <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                         <i class="ri-user-star-line text-5xl text-orange-400""></i>
@@ -179,10 +164,10 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             </div>
         </div>
     </section>
-<!-- cours -->
+
     <section class="py-20 px-4" id="Cours">
     <div class="max-w-7xl mx-auto">
-        <!-- Section Header -->
+        
         <div class="text-center mb-16">
             <h2 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">Cours populaires</h2>
             <p class="text-gray-600 text-xl max-w-2xl mx-auto">
@@ -190,10 +175,9 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             </p>
         </div>
 
-        <!-- Courses Grid -->
+
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            <?php foreach ($courses as $course): ?>
-                <!-- Course Card -->
+            <?php foreach ($coursI as $course): ?>
                 <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105">
                     <div class="p-6">
                         <img src="<?php echo $course['image']; ?>" alt="<?php echo htmlspecialchars($course['titre']); ?>" class="h-48 w-full object-contain mb-6 transform transition duration-300 hover:scale-105 cursor-pointer">
@@ -208,7 +192,7 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             <?php endforeach; ?>
         </div>
 
-        <!-- View All Button -->
+
         <div class="text-center text-2xl">
             <button class="inline-flex items-center justify-center px-8 py-3 border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white rounded-full transition duration-300">
                 <a href="./visiteur/cours.php">Voir tous les cours</a>  
@@ -217,10 +201,9 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
     </div>
 </section>
 
-<!-- categories -->
 <section class="py-20 px-4">
     <div class="max-w-7xl mx-auto">
-        <!-- Section Header -->
+
         <div class="text-center mb-16">
             <h2 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">Top Categories</h2>
             <p class="text-gray-600 text-xl max-w-3xl mx-auto">
@@ -228,13 +211,12 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             </p>
         </div>
 
-        <!-- Categories Grid -->
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             <?php foreach ($categories as $index => $cat): ?>
-                <!-- Category Card -->
+              
                 <div class="p-8 text-center hover:shadow-lg transition duration-300 <?php echo $index % 2 == 0 ? 'bg-white' : 'bg-orange-400'; ?> rounded-lg shadow-md">
                     <div class="inline-block mb-4">
-                        <!-- Vous pouvez ajouter une icône ou une image spécifique pour chaque catégorie -->
+                        
                         <i class="ri-article-line text-3xl <?php echo $index % 2 == 0 ? 'text-orange-400' : 'text-white'; ?>"></i>
                     </div>
                     <h3 class="text-3xl font-semibold <?php echo $index % 2 == 0 ? 'text-slate-800' : 'text-white'; ?>"><?php echo htmlspecialchars($cat['nom']); ?></h3>
@@ -242,7 +224,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             <?php endforeach; ?>
         </div>
 
-        <!-- Pagination -->
         
     </div>
 </section>
@@ -254,7 +235,7 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             </h2>
 
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Expert Instructors -->
+            
                 <div class="bg-white p-8 rounded-lg shadow-md text-center hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105">
                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-orange-100 mb-6">
                         <i class="ri-book-open-line text-2xl text-orange-400"></i>
@@ -264,8 +245,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                         Apprenez auprès de professionnels de l'industrie et d'éducateurs expérimentés.
                     </p>
                 </div>
-
-                <!-- Flexible Learning -->
                 <div class="bg-white p-8 rounded-lg shadow-md text-center hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105">
                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-orange-100 mb-6">
                         <i class="ri-flashlight-line text-2xl text-orange-400"></i>
@@ -275,8 +254,7 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                         Étudiez à votre rythme, à tout moment et en tout lieu.
                     </p>
                 </div>
-
-                <!-- Certified Courses -->
+>
                 <div class="bg-white p-8 rounded-lg shadow-md text-center hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105">
                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-orange-100 mb-6">
                         <i class="ri-check-line text-2xl text-orange-400"></i>
@@ -290,7 +268,6 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
         </div>
     </section>
 
-    <!-- Expert Instructors Section -->
     <section class="py-20 px-4 bg-white" id="Mentors">
     <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
@@ -306,7 +283,7 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
             <?php foreach ($enseignants as $enseignant) : ?>
                 <div class="text-center rounded-lg shadow-md hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105">
                     <div class="relative mb-4 aspect-square">
-                        <img src="../uploads/avatars/<?php echo $enseignant['avatar']; ?>" alt="<?php echo htmlspecialchars($enseignant['enseignant_nom']); ?>"
+                        <img src="../uploads/avatars/<?php echo $enseignant['avatar'] ?? 'simple.png' ; ?>" alt="<?php echo htmlspecialchars($enseignant['enseignant_nom']); ?>"
                              class="w-full h-full object-cover rounded-lg">
                     </div>
                     <h3 class="text-lg font-semibold text-slate-800"><?php echo htmlspecialchars($enseignant['enseignant_nom']); ?></h3>
@@ -314,10 +291,10 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                 </div>
             <?php endforeach; ?>
         </div>
-        <!-- Pagination -->
+
         <div class="mt-12 flex justify-center">
             <div class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <!-- Lien Précédent -->
+               
                 <?php if ($page > 1): ?>
                     <a href="?page=<?= $page - 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                         <span class="sr-only">Précédent</span>
@@ -327,14 +304,14 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                     </a>
                 <?php endif; ?>
 
-                <!-- Liens des pages -->
+               
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                     <a href="?page=<?= $i ?>" class="<?= $i === $page ? 'bg-youdemy text-white' : 'bg-white text-gray-500' ?> relative inline-flex items-center px-4 py-2 border text-sm font-medium">
                         <?= $i ?>
                     </a>
                 <?php endfor; ?>
 
-                <!-- Lien Suivant -->
+               
                 <?php if ($page < $totalPages): ?>
                     <a href="?page=<?= $page + 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                         <span class="sr-only">Suivant</span>
