@@ -87,10 +87,22 @@ class Admin extends User {
     }
 
     public function addCategory($nom) {
-        $query = "INSERT INTO category (nom) VALUES (:nom)";
-        $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([':nom' => $nom]);
+    $checkQuery = "SELECT COUNT(*) FROM category WHERE nom = :nom";
+    $checkStmt = $this->pdo->prepare($checkQuery);
+    $checkStmt->execute([':nom' => $nom]);
+    $categoryExists = $checkStmt->fetchColumn();
+
+    if ($categoryExists) {
+        return "La catégorie $nom existe déjà.";
     }
+    $query = "INSERT INTO category (nom) VALUES (:nom)";
+    $stmt = $this->pdo->prepare($query);
+    $stmt->execute([':nom' => $nom]);
+
+    return "Catégorie ajoutée avec succès!";
+}
+
+
 
     public function deleteCategory($categoryId) {
         $query = "DELETE FROM category WHERE id = :id";
@@ -106,10 +118,21 @@ class Admin extends User {
     }
 
     public function addTag($nom) {
-        $query = "INSERT INTO tag (nom) VALUES (:nom)";
-        $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([':nom' => $nom]);
+    $checkQuery = "SELECT COUNT(*) FROM tag WHERE nom = :nom";
+    $checkStmt = $this->pdo->prepare($checkQuery);
+    $checkStmt->execute([':nom' => $nom]);
+    $tagExists = $checkStmt->fetchColumn();
+
+    if ($tagExists) {
+        return "Le tag $nom existe déjà.";
     }
+    $query = "INSERT INTO tag (nom) VALUES (:nom)";
+    $stmt = $this->pdo->prepare($query);
+    $stmt->execute([':nom' => $nom]);
+
+    return "Tag ajouté avec succès!";
+}
+
 
     public function deleteTag($tagId) {
         $query = "DELETE FROM tag WHERE id = :id";
@@ -118,21 +141,42 @@ class Admin extends User {
     }
 
     public function addMultipleTags($tags) {
-        $query = "INSERT INTO tag (nom) VALUES (:nom)";
-        $stmt = $this->pdo->prepare($query);
-        
-        $this->pdo->beginTransaction();
-        try {
-            foreach ($tags as $tag) {
-                $stmt->execute([':nom' => trim($tag)]);
+    $query = "INSERT INTO tag (nom) VALUES (:nom)";
+    $stmt = $this->pdo->prepare($query);
+
+    $addedTags = 0;
+    $duplicateTags = 0;
+
+    foreach ($tags as $tag) {
+        $messageF = '';
+        $tag = trim($tag);
+
+        if (!empty($tag)) {
+            $checkQuery = "SELECT COUNT(*) FROM tag WHERE nom = :nom";
+            $checkStmt = $this->pdo->prepare($checkQuery);
+            $checkStmt->execute([':nom' => $tag]);
+            $exists = $checkStmt->fetchColumn();
+
+            if ($exists == 0) {
+                $stmt->execute([':nom' => $tag]);
+                $addedTags++;
+            } else {
+                $duplicateTags++;
             }
-            $this->pdo->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->pdo->rollBack();
-            return false;
         }
     }
+    if ($addedTags > 0) {
+        $messageF = "$addedTags tag(s) ajouté(s) avec succès.";
+    }
+
+    if ($duplicateTags > 0) {
+        $messageF .= " $duplicateTags tag(s) étaient déjà présents et ont été ignorés.";
+    }
+
+    return $messageF;
+}
+
+
 
     public function getTop3Enseignants() {
     $query = "
