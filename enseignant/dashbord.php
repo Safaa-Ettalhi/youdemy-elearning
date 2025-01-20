@@ -6,6 +6,7 @@ include ('../class/categorie.php');
 include ('../class/tag.php');
 include('../class/videoCourse.php');  
 include('../class/documentCourse.php');
+require_once '../class/enrollement.php';
 $enseignant_id = $_SESSION['id'];
 if (!isset($_SESSION['id'])) {
     header('Location: ../login.php');
@@ -28,14 +29,18 @@ $documentCourse = new DocumentCourse($pdo);
 $videoCourses = $videoCourse->getCoursesByEnseignant($enseignant_id);
 $documentCourses = $documentCourse->getCoursesByEnseignant($enseignant_id);
 $course = new Course($pdo);
+
 $stats = $course->getDashboardStats($id_enseignant);
 $completionRate = $course->getCompletionRate($id_enseignant);
+
 
 $category = new Category($pdo);
 $tag = new Tag($pdo);
 
 $categories = $category->getCategories();
 $tags = $tag->getTags();
+$enrollment = new Enrollment($pdo);
+$enrollments = $enrollment->getEnrollmentsByTeacher($id_enseignant);
 ?>
 
 <!DOCTYPE html>
@@ -144,7 +149,6 @@ $tags = $tag->getTags();
             </div>
         </div>
 
-        <!-- Course Management Section -->
         <div class="bg-white shadow rounded-lg mb-8">
             <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-900">Gestion des cours</h2>
@@ -187,7 +191,6 @@ $tags = $tag->getTags();
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <!-- Boucle sur les cours vidéo -->
                             <?php foreach ($videoCourses as $coursItem): 
                             $courseDetails = $videoCourse->getCourseById($coursItem['id']); ?>
                             <tr>
@@ -202,7 +205,7 @@ $tags = $tag->getTags();
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                        <?= htmlspecialchars($coursItem['categorie']) ?>
+                                        <?= htmlspecialchars($coursItem['categorie'] ?? 'Aucun') ?>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -214,7 +217,6 @@ $tags = $tag->getTags();
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <!-- Bouton pour afficher les détails -->
                                     <button class="text-orange-600 hover:text-orange-900 mr-4">
                                     <a href="./action/modifier_cours.php?id=<?= $coursItem['id'] ?>">
                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +226,7 @@ $tags = $tag->getTags();
                                         </svg>
                                         </a>
                                     </button>
-                                    <!-- Bouton de suppression -->
+                                    
                                     <button class="text-red-600 hover:text-red-900">
                                         <a href="./action/supprimer_cours.php?id=<?= $coursItem['id'] ?>">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,7 +240,7 @@ $tags = $tag->getTags();
                             </tr>
                             <?php endforeach; ?>
 
-                            <!-- Boucle sur les cours document -->
+                            
                             <?php foreach ($documentCourses as $coursItem): 
                             $courseDetails = $documentCourse->getCourseById($coursItem['id']); ?>
                             <tr>
@@ -265,7 +267,7 @@ $tags = $tag->getTags();
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <!-- Bouton pour afficher les détails -->
+                                  
                                      
                                     <button onclick='openUpdateModal()' class="text-orange-600 hover:text-orange-900 mr-4">
                                     <a href="./action/modifier_cours.php?id=<?= $coursItem['id'] ?>">
@@ -276,7 +278,7 @@ $tags = $tag->getTags();
                                         </svg>
                                         </a>
                                     </button>
-                                    <!-- Bouton de suppression -->
+                                    
                                     <button class="text-red-600 hover:text-red-900">
                                         <a href="./action/supprimer_cours.php?id=<?= $coursItem['id'] ?>">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -296,8 +298,8 @@ $tags = $tag->getTags();
             </div>
         </div>
 
-        <!-- Add Course Form -->
-        <div class="bg-white shadow rounded-lg hidden" id="add">
+      
+        <div class="bg-white shadow rounded-lg hidden mb-8" id="add">
 
             <div class="relative px-4 py-5 sm:px-6 flex justify-between items-center">
                 <h3 class="text-xl font-medium leading-6 text-gray-900">Ajouter un nouveau cours</h3>
@@ -348,7 +350,7 @@ $tags = $tag->getTags();
                         <select id="category" name="category" required
                             class="mt-1 block w-full rounded-md p-2 border border-orange-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
                             <?php
-            // Afficher les catégories
+            
             foreach ($categories as $cat) {
                 echo "<option value=\"" . $cat['id'] . "\">" . htmlspecialchars($cat['nom']) . "</option>";
             }
@@ -360,7 +362,7 @@ $tags = $tag->getTags();
                         <label for="tags" class="block text-sm font-medium text-gray-700">Tags</label>
                         <div id="tags-container" class="space-y-2 space-x-1">
                             <?php
-            // Afficher les tags
+           
             foreach ($tags as $tag) {
                 echo "<div class='tag-item bg-gray-200 space-x-2 inline-block p-2 border border-orange-300 rounded-full cursor-pointer hover:bg-orange-300' data-tag-id=\"" . $tag['id'] . "\">" . htmlspecialchars($tag['nom']) . "</div>";
             }
@@ -381,8 +383,6 @@ $tags = $tag->getTags();
                             </select>
                         </div>
 
-
-                        <!-- Zone pour télécharger une vidéo -->
                         <div id="video-upload" class="hidden">
                             <label class="block my-4 text-sm font-medium text-gray-700">Vidéo :</label>
                             <div
@@ -399,11 +399,11 @@ $tags = $tag->getTags();
                                     <p class="text-xs text-gray-500">Vidéo</p>
                                 </div>
                             </div>
-                            <!-- Zone d'affichage du nom du fichier -->
+
                             <div id="video-name" class="mt-4 text-center text-sm text-gray-700"></div>
                         </div>
 
-                        <!-- Zone pour télécharger un document -->
+
                         <div id="document-upload" class="hidden">
                             <label class="block my-4 text-sm font-medium text-gray-700">Document :</label>
                             <div
@@ -420,7 +420,7 @@ $tags = $tag->getTags();
                                     <p class="text-xs text-gray-500">Document PDF jusqu'à 10MB</p>
                                 </div>
                             </div>
-                            <!-- Zone d'affichage du nom du fichier -->
+
                             <div id="document-name" class="mt-4 text-center text-sm text-gray-700"></div>
                         </div>
                     </div>
@@ -436,7 +436,65 @@ $tags = $tag->getTags();
             </div>
         </div>
 
-
+        <div class="bg-white shadow-lg rounded-lg ">
+        <div class="px-6 py-5 flex justify-between items-center border-b">
+            <h2 class="text-2xl font-semibold text-gray-800">Consultation des inscriptions</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Étudiant</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Cours</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Date d'inscription</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Statut</th>
+                       
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <?php if (!empty($enrollments)) : ?>
+                <?php foreach ($enrollments as $enrollment) : ?>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap flex items-center">
+                            <div class="h-10 w-10 rounded-full overflow-hidden border border-gray-200 flex-shrink-0">
+                                <img src="../uploads/avatars/<?= htmlspecialchars($enrollment['etudiant_avatar']) ?>" alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-800"><?= htmlspecialchars($enrollment['etudiant_nom']) ?></div>
+                                <div class="text-sm text-gray-500"><?= htmlspecialchars($enrollment['etudiant_email']) ?></div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-800"><?= htmlspecialchars($enrollment['cours_nom']) ?></div>
+                            <div class="text-sm text-gray-500"><?= htmlspecialchars($enrollment['cours_description']) ?></div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><?= htmlspecialchars($enrollment['date_inscription']) ?></td>
+                        
+                        <td class="px-6 py-4 whitespace-nowrap">
+                        <?php if ($enrollment['status'] === 'nonComplet') : ?>
+                        <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                            <?= htmlspecialchars($enrollment['status']) ?>
+                        </span>
+                        <?php else : ?>
+                            <span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                <?= htmlspecialchars($enrollment['status']) ?>
+                            </span>
+                        <?php endif; ?>
+                        </td>
+                        
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                                Aucun étudiant inscrit à vos cours pour le moment.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
     </main>
     <script src="../scriptF.js"></script>
 
