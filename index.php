@@ -254,7 +254,7 @@ $enseignants = $enseignant->getEnseignantPaginated($page, $pertPage);
                         Étudiez à votre rythme, à tout moment et en tout lieu.
                     </p>
                 </div>
->
+
                 <div class="bg-white p-8 rounded-lg shadow-md text-center hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105">
                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-orange-100 mb-6">
                         <i class="ri-check-line text-2xl text-orange-400"></i>

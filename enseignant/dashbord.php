@@ -457,7 +457,7 @@ $enrollments = $enrollment->getEnrollmentsByTeacher($id_enseignant);
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap flex items-center">
                             <div class="h-10 w-10 rounded-full overflow-hidden border border-gray-200 flex-shrink-0">
-                                <img src="../uploads/avatars/<?= htmlspecialchars($enrollment['etudiant_avatar']) ?>" alt="Avatar" class="w-full h-full object-cover">
+                                <img src="../uploads/avatars/<?= htmlspecialchars($enrollment['etudiant_avatar']) ?? 'simple.png'  ?>" alt="Avatar" class="w-full h-full object-cover">
                             </div>
                             <div class="ml-4">
                                 <div class="text-sm font-medium text-gray-800"><?= htmlspecialchars($enrollment['etudiant_nom']) ?></div>

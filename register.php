@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $role = $_POST['role'];
     $message = '';
 
-    
+    $avatar=null;
 if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
     $fileName = $_FILES['avatar']['name'];
     if (in_array(pathinfo($fileName, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png']) &&

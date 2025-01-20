@@ -4,7 +4,7 @@ class Enseignant extends User {
 
     public function __construct($id, $nom, $email, $mot_de_passe, $pdo) {
         parent::__construct($id, $nom, $email, $mot_de_passe, 'Enseignant', $pdo);
-    }
+    } 
     public function getEnseignantPaginated($pageE, $perPage) {
     $offset = ($pageE - 1) * $perPage;
 
@@ -22,7 +22,6 @@ class Enseignant extends User {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
 
 public function getTotalEnseignants() {
     $stmt = $this->pdo->prepare('SELECT COUNT(*) as total FROM Utilisateur WHERE role = "Enseignant"');

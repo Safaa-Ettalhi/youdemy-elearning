@@ -63,9 +63,6 @@ class Course {
             throw new Exception($e->getMessage());
         }
     }
-
-
-
     public function getCourses() {
         $stmt = $this->pdo->prepare("
         SELECT Cours.*, 
@@ -119,7 +116,13 @@ class Course {
 
     return $course;
 }
-
+public function getCoursesCount() {
+        $query = "SELECT COUNT(*) as total FROM cours";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['total'];
+    }
     public function searchCourses($searchTerm) {
     $stmt = $this->pdo->prepare('
         SELECT Cours.*, Utilisateur.nom, Utilisateur.avatar AS avatar, Category.nom AS category_name, 
@@ -140,12 +143,6 @@ class Course {
 
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-public function getTotalCourses() {
-   
-    $sql = "SELECT COUNT(*) FROM Cours";
-    $stmt = $this->pdo->query($sql);
-    return $stmt->fetchColumn();
 }
 
 public function getDashboardStats($id_enseignant) {
@@ -197,22 +194,19 @@ public function getCompletionRate($id_enseignant) {
 public function getCoursesByEnseignant($enseignant_id) {
         
     }
-
-
-public function deleteCourse($courseId) {
-        try {
-            
-            $deleteStmt = $this->pdo->prepare("DELETE FROM Cours WHERE id = ?");
-            $deleteStmt->execute([$courseId]);
-
-            if ($deleteStmt->rowCount() == 0) {
-                throw new Exception("Aucun cours trouvé avec l'ID fourni.");
-            }
-        } catch (Exception $e) {
-           
-            throw new Exception("Erreur lors de la suppression du cours : " . $e->getMessage());
-        }
-    }    
+   
+    public function deleteCourse($courseId) {
+        $query = "DELETE FROM cours WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute([':id' => $courseId]);
+    }   
+    public function getPopularCourse() {
+        $query = "SELECT titre FROM cours ORDER BY id DESC LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['titre'];
+    }
 }
 
 ?>

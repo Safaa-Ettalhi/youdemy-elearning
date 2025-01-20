@@ -1,4 +1,8 @@
 <?php
+include '../class/cours.php';
+include '../class/enseignent.php';
+include '../class/categorie.php';
+include '../class/tag.php';
 session_start();
 require_once '../class/db.php';
 require_once '../class/admin.php';
@@ -8,9 +12,10 @@ if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'Administrateur') {
 }
 $db = new Database();
 $pdo = $db->getPDO();
-
+$cours= new Course($pdo);
 $admin = new Admin($_SESSION['id'], $_SESSION['nom'], $_SESSION['email'], '', $pdo);
-
+$categorie = new Category($pdo);
+$tag = new Tag($pdo);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
@@ -30,36 +35,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $admin->deleteUser($_POST['userId']);
                 break;
             case 'deleteCourse':
-                $admin->deleteCourse($_POST['courseId']);
+                $cours->deleteCourse($_POST['courseId']);
                 break;
             case 'addCategory':
-                $admin->addCategory($_POST['categoryName']);
+                $message = $categorie->addCategory($_POST['categoryName']);
+               
                 break;
             case 'deleteCategory':
-                $admin->deleteCategory($_POST['categoryId']);
+                $categorie->deleteCategory($_POST['categoryId']);
                 break;
             case 'addTag':
-                $admin->addTag($_POST['tagName']);
+               $messageE=$tag->addTag($_POST['tagName']);
                 break;
             case 'deleteTag':
-                $admin->deleteTag($_POST['tagId']);
+                $tag->deleteTag($_POST['tagId']);
                 break;
             case 'addMultipleTags':
                 $tags = explode(',', $_POST['tags']);
-                $admin->addMultipleTags($tags);
+                $messageE=$tag->addMultipleTags($tags);
                 break;
         }
     }
 }
 
-$coursesCount = $admin->getCoursesCount();
-$popularCourse = $admin->getPopularCourse();
+$coursesCount = $cours->getCoursesCount();
+$popularCourse = $cours->getPopularCourse();
 $pendingTeachers = $admin->getPendingTeachers();
 $topEnseignants =$admin->getTop3Enseignants();
 $users = $admin->getAllUsers();
 $courses = $admin->getCourses();
-$categories = $admin->getCategories();
-$tags = $admin->getTags();
+$categories = $categorie->getCategories();
+$tags = $tag->getTags();
 
 ?>
 <!DOCTYPE html>
