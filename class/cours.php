@@ -67,7 +67,29 @@ class Course {
 
 
     public function getCourses() {
+        $stmt = $this->pdo->prepare("
+        SELECT Cours.*, 
+            Utilisateur.nom AS nom, 
+            Utilisateur.avatar AS avatar, 
+            Category.nom AS category_name, 
+            GROUP_CONCAT(Tag.nom) AS tags, 
+            COUNT(Enrollment.user_id) AS nbr_etudiants
+        FROM Cours
+        LEFT JOIN Category ON Cours.categorie_id = Category.id
+        LEFT JOIN Cours_Tags ON Cours.id = Cours_Tags.cours_id
+        LEFT JOIN Tag ON Cours_Tags.tag_id = Tag.id
+        LEFT JOIN Utilisateur ON Cours.user_id = Utilisateur.id
+        LEFT JOIN Enrollment ON Cours.id = Enrollment.cours_id
+        GROUP BY 
+        Cours.id, 
+        Utilisateur.nom, 
+        Utilisateur.avatar, 
+        Category.nom
+        ORDER BY RAND() LIMIT 6
        
+    ");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getCourseById($course_id) {
     
