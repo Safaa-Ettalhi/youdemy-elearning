@@ -28,45 +28,41 @@ class Course {
     public function addCourse($title, $description, $filePath, $imagePath, $price, $teacherId, $categoryId, $tags, $contentType) {
         throw new Exception("Cette méthode doit être surchargée par les classes dérivées.");
     }
-    public function updateCourse($course_id, $title, $description, $filePath, $imagePath, $price, $teacherId, $category_id, $tags, $content_type) {
-    try {
-        // Vérifier si le cours existe
-        $stmt = $this->pdo->prepare("SELECT user_id FROM cours WHERE id = ? ");
-        $stmt->execute([$course_id]);
-        $course = $stmt->fetch();
+    public function updateCourse($course_id, $title, $description, $filePath, $imagePath, $price, $teacherId, $category_id, $tags, $content_type, $videoPath) {
+        try {
+    
+            $stmt = $this->pdo->prepare("SELECT user_id FROM cours WHERE id = ?");
+            $stmt->execute([$course_id]);
+            $course = $stmt->fetch();
 
-        if (!$course) {
-            throw new Exception("Cours introuvable.");
-        }
-
-       
-        var_dump($course_id, $teacherId, $course['user_id']); 
-
-        
-        if ((int)$teacherId !== (int)$course['user_id']) {
-            throw new Exception("Vous n'êtes pas autorisé à modifier ce cours.");
-        }
-     
-        $stmt = $this->pdo->prepare("
-            UPDATE cours
-            SET titre = ?, description = ?, fichier_document = ?, image = ?, prix = ?, categorie_id = ?, typeContenu = ?
-            WHERE id = ?
-        ");
-        $stmt->execute([$title, $description, $filePath, $imagePath, $price, $category_id, $content_type, $course_id]);
-
-        $stmt = $this->pdo->prepare("DELETE FROM cours_tags WHERE cours_id = ?");
-        $stmt->execute([$course_id]);
-        if (!empty($tags)) {
-            $stmt = $this->pdo->prepare("INSERT INTO cours_tags (cours_id, tag_id) VALUES (?, ?)");
-            foreach ($tags as $tag_id) {
-                $stmt->execute([$course_id, $tag_id]);
+            if (!$course) {
+                throw new Exception("Cours introuvable.");
             }
+
+            if ((int)$teacherId !== (int)$course['user_id']) {
+                throw new Exception("Vous n'êtes pas autorisé à modifier ce cours.");
+            }
+     
+            $stmt = $this->pdo->prepare("
+                UPDATE cours
+                SET titre = ?, description = ?, fichier_document = ?, image = ?, prix = ?, categorie_id = ?, typeContenu = ?, vedio = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([$title, $description, $filePath, $imagePath, $price, $category_id, $content_type, $videoPath, $course_id]);
+
+            $stmt = $this->pdo->prepare("DELETE FROM cours_tags WHERE cours_id = ?");
+            $stmt->execute([$course_id]);
+
+            if (!empty($tags)) {
+                $stmt = $this->pdo->prepare("INSERT INTO cours_tags (cours_id, tag_id) VALUES (?, ?)");
+                foreach ($tags as $tag_id) {
+                    $stmt->execute([$course_id, $tag_id]);
+                }
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
-    } catch (Exception $e) {
-       
-        throw new Exception($e->getMessage());
     }
-}
 
 
 
