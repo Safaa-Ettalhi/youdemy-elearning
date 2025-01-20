@@ -1,13 +1,9 @@
 <?php
 include('../class/db.php');
 include('../class/cours.php'); 
-//include ('../class/categorie.php');
-//Include ('../class/tag.php');
 include('../class/videoCourse.php');  
 include('../class/documentCourse.php');
 $perPage = 6;
-
-// Récupérer la page actuelle à partir de l'URL (si non spécifié, la page 1 est utilisée)
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -22,13 +18,12 @@ if (!empty($searchTerm)) {
     $totalCourses = count($courses);
     $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
 } else {
-    $videoCourses = $videoCourse->getCourses();
-    $documentCourses = $documentCourse->getCourses();
-    $totalCourses = $course->getTotalCourses();
+  
+    $courses = array_merge($videoCourse->getCourses(), $documentCourse->getCourses());
 }
-
+$totalCourses = count($courses);
 $totalPages = ceil($totalCourses / $perPage);
-
+$courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
 
 ?>
 
@@ -54,7 +49,6 @@ $totalPages = ceil($totalCourses / $perPage);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation -->
     <nav class="fixed w-full bg-white/95 backdrop-blur-sm z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
@@ -90,8 +84,6 @@ $totalPages = ceil($totalCourses / $perPage);
             </div>
         </div>
     </nav>
-
-    <!-- Mobile Menu (Hidden Initially) -->
     <div id="mobile-menu" class="bg-white shadow-lg absolute w-full left-0 top-20 z-50 hidden">
         <div class="px-6 py-4">
         <a href="../index.php" class="text-gray-600 hover:text-gray-900">Accueil</a>
@@ -109,9 +101,8 @@ $totalPages = ceil($totalCourses / $perPage);
         </div>
     </div>
 
-    <!-- Main Content -->
     <main class="md:pt-20" >
-        <!-- Search Section with Background Image -->
+      
         <div class="bg-youdemy text-white py-16 pt-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="text-4xl font-bold mb-4">Découvrez nos cours</h1>
@@ -125,56 +116,28 @@ $totalPages = ceil($totalCourses / $perPage);
         </div>
     </div>
 
-        <!-- Courses Section -->
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Cours disponibles</h2>
         
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <?php foreach ($videoCourses as $coursItem): 
-                $courseDetails = $videoCourse->getCourseById($coursItem['id']); ?>
+                <?php foreach ($courses as $course) : ?>
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <img src="<?= $coursItem['image']; ?>" alt="Course thumbnail" class="w-full h-48 object-cover">
+                    <img src="<?= $course['image']; ?>" alt="Course thumbnail" class="w-full h-48 object-cover">
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($coursItem['titre']); ?></h3>
-                        <p class="text-gray-600 mb-4"><?= htmlspecialchars($coursItem['description']); ?></p>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($course['titre']); ?></h3>
+                        <p class="text-gray-600 mb-4"><?= htmlspecialchars($course['description']); ?></p>
                         <div class="flex items-center mb-4">
-                            <img src="../uploads/avatars/<?=$coursItem['avatar']; ?>" alt="Teacher" class="w-10 h-10 rounded-full mr-3">
-                            <span class="text-sm text-gray-700">Par <?= htmlspecialchars($coursItem['nom']); ?></span>
+                            <img src="../uploads/avatars/<?= $course['avatar'] ?? 'simple.png' ; ?>" alt="Teacher" class="w-10 h-10 rounded-full mr-3">
+                            <span class="text-sm text-gray-700">Par <?= htmlspecialchars($course['nom']); ?></span>
                         </div>
                         <div class="flex justify-between items-center mb-4">
-                            <span class="text-sm text-gray-500">Catégorie: <?= htmlspecialchars($coursItem['category_name']); ?></span>
-                            <span class="text-sm text-gray-500"><?= htmlspecialchars($coursItem['nbr_etudiants']); ?> étudiants</span>
+                            <span class="text-sm text-gray-500">Catégorie: <?= htmlspecialchars($course['category_name']?? 'Aucune'); ?></span>
+                            <span class="text-sm text-gray-500"><?= htmlspecialchars($course['nbr_etudiants']); ?> étudiants</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-youdemy font-bold text-xl"> <?= htmlspecialchars($coursItem['prix']); ?>$</span>
+                            <span class="text-youdemy font-bold text-xl"> <?= htmlspecialchars($course['prix']); ?>$</span>
                             <div class="flex justify-center text-xl">
-                            <a href="./coursdetails.php?id=<?php echo $coursItem['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
-                                En savoir plus
-                            </a>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-                <?php foreach ($documentCourses as $coursItem): 
-                    $courseDetails = $documentCourse->getCourseById($coursItem['id']); ?>
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <img src="<?= $coursItem['image']; ?>" alt="Course thumbnail" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($coursItem['titre']); ?></h3>
-                        <p class="text-gray-600 mb-4"><?= htmlspecialchars($coursItem['description']); ?></p>
-                        <div class="flex items-center mb-4">
-                            <img src="<?= $coursItem['avatar']; ?>" alt="Teacher" class="w-10 h-10 rounded-full mr-3">
-                            <span class="text-sm text-gray-700">Par <?= htmlspecialchars($coursItem['nom']); ?></span>
-                        </div>
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-sm text-gray-500">Catégorie: <?= htmlspecialchars($coursItem['category_name']); ?></span>
-                            <span class="text-sm text-gray-500"><?= htmlspecialchars($coursItem['nbr_etudiants']); ?> étudiants</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-youdemy font-bold text-xl"> <?= htmlspecialchars($coursItem['prix']); ?>$</span>
-                            <div class="flex justify-center text-xl">
-                            <a href="./coursdetails.php?id=<?php echo $coursItem['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
+                            <a href="./coursdetails.php?id=<?php echo $course['id']; ?>" class="bg-orange-400 text-white py-2 px-6 rounded-lg hover:bg-orange-500 focus:outline-none transition duration-300 transform hover:scale-105">
                                 En savoir plus
                             </a>
                         </div>
@@ -185,10 +148,9 @@ $totalPages = ceil($totalCourses / $perPage);
             </div>
 
            
-            <!-- Pagination -->
-<div class="mt-12 flex justify-center">
-    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-        <!-- Lien Précédent -->
+            <div class="mt-12 flex justify-center">
+    <div class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+        
         <?php if ($page > 1): ?>
             <a href="?page=<?= $page - 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                 <span class="sr-only">Précédent</span>
@@ -198,14 +160,14 @@ $totalPages = ceil($totalCourses / $perPage);
             </a>
         <?php endif; ?>
 
-        <!-- Liens des pages -->
+       
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
             <a href="?page=<?= $i ?>" class="<?= $i === $page ? 'bg-youdemy text-white' : 'bg-white text-gray-500' ?> relative inline-flex items-center px-4 py-2 border text-sm font-medium">
                 <?= $i ?>
             </a>
         <?php endfor; ?>
 
-        <!-- Lien Suivant -->
+        
         <?php if ($page < $totalPages): ?>
             <a href="?page=<?= $page + 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                 <span class="sr-only">Suivant</span>
@@ -214,7 +176,7 @@ $totalPages = ceil($totalCourses / $perPage);
                 </svg>
             </a>
         <?php endif; ?>
-    </nav>
+    </div>
 </div>
 
         </div>
