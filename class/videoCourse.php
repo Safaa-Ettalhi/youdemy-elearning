@@ -32,7 +32,7 @@ class VideoCourse extends Course {
         return $courseId;
     }
     
-    public function getCourses() {
+    public function getCourses() {    
     $stmt = $this->pdo->prepare("
         SELECT Cours.*, 
             Utilisateur.nom AS nom, 

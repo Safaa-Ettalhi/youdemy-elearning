@@ -26,7 +26,7 @@ class User {
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
-
+        
         return "<div class='text-red-500 p-3 mb-4 border border-red-300 bg-red-100 rounded'>L'email existe déjà.</div>";
     } else {
         
@@ -101,7 +101,7 @@ class User {
         exit();
     }
 
-    
+    // Getter methods
     public function getId() {
         return $this->id;
     }
