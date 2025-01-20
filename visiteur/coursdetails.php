@@ -3,22 +3,16 @@ include('../class/db.php');
 include('../class/cours.php'); 
 include('../class/videoCourse.php');  
 include('../class/documentCourse.php');  
-// Initialisation
+
 $db = new Database();
 $pdo = $db->getPDO();
-//$courseModel = new Course($pdo);
-
-// Récupération du cours par ID (exemple ID=1, peut être dynamique via GET)
 $course_id = isset($_GET['id']) ? intval($_GET['id']) : 1;
-//$course = $courseModel->getCourseById($course_id);
 $videoCourse = new VideoCourse($pdo);
 $documentCourse = new DocumentCourse($pdo);
 $course = null;
 if ($course_id > 0) {
-    // D'abord essayer de récupérer un cours vidéo
+    
     $course = $videoCourse->getCourseById($course_id);
-
-    // Si aucun cours vidéo n'est trouvé, essayer de récupérer un cours document
     if (!$course) {
         $course = $documentCourse->getCourseById($course_id);
     }
@@ -28,7 +22,6 @@ if (!$course) {
     exit;
 }
 
-// Génération dynamique du HTML
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -62,7 +55,7 @@ if (!$course) {
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
-                    <!-- Burger Icon for Mobile -->
+                    
                     <button id="burger-icon" class="text-gray-600 focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -89,7 +82,6 @@ if (!$course) {
         </div>
     </nav>
 
-    <!-- Mobile Menu (Hidden Initially) -->
     <div id="mobile-menu" class="bg-white shadow-lg absolute w-full left-0 top-20 z-50 hidden">
         <div class="px-6 py-4">
             <a href="index.php" class="block text-gray-600 hover:text-gray-900 py-2">Accueil</a>
@@ -106,25 +98,24 @@ if (!$course) {
             </button>
         </div>
     </div>
-
-    <!-- Course Header -->
     <header class="bg-gray-800 text-white py-16 pt-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="text-4xl font-bold mb-8"><?= htmlspecialchars($course['titre']); ?></h1>
             
             
             <div class="flex items-center">
-                <img src="<?= htmlspecialchars($course['avatar']); ?>" alt="<?= htmlspecialchars($course['enseignant']); ?>" class="w-12 h-12 rounded-full mr-4">
+                <img src="../uploads/avatars/<?= htmlspecialchars($course['avatar']) ?? 'simple.png' ; ?>" alt="<?= htmlspecialchars($course['enseignant']); ?>" class="w-12 h-12 rounded-full mr-4">
                 <div>
                     <p class="font-semibold">Créé par <?= htmlspecialchars($course['enseignant']); ?></p>
-                    <p class="text-sm">Expert en <?= htmlspecialchars($course['categorie']); ?></p>
+                    <?php if (!empty($cours['categorie'])) { ?>
+    <p class="text-gray-500 text-sm">Expet en <?php echo htmlspecialchars($course['categorie']); ?></p>
+    <?php } ?>
+                    
                 </div>
             </div>
         </div>
     </header>
 
-
-    <!-- Course Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2">
@@ -150,10 +141,12 @@ if (!$course) {
         <div class="mb-8">
                     <h2 class="text-2xl font-bold mb-4">À propos de l'instructeur</h2>
                     <div class="flex items-start mb-6">
-                    <img src="<?= htmlspecialchars($course['avatar']); ?>" alt="<?= htmlspecialchars($course['enseignant']); ?>" class="w-24 h-24 rounded-full mr-6">
+                    <img src="../uploads/avatars/<?= htmlspecialchars($course['avatar']) ?? 'simple.png'; ?>" alt="<?= htmlspecialchars($course['enseignant']); ?>" class="w-24 h-24 rounded-full mr-6">
                         <div>
                             <h3 class="text-xl text-orange-400 font-semibold mb-2"><?= htmlspecialchars($course['enseignant']); ?></h3>
-                            <p class="text-gray-600 mb-4">Expert(e) en <?= htmlspecialchars($course['categorie']); ?></p>
+                            <?php if (!empty($course['categorie'])) { ?>
+    <p class="text-gray-500 text-sm">Expet en <?php echo htmlspecialchars($course['categorie']); ?></p>
+    <?php } ?>
                             
                         </div>
                     </div>
@@ -162,11 +155,11 @@ if (!$course) {
                     </p>
                 </div>
     </main>
-        <!-- Footer -->
+      
         <footer class="bg-gray-100 py-20 px-8 pt-16 pb-8">
         <div class="container max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-3 gap-8 md:gap-0 mb-8">
-                <!-- Brand -->
+               
                 <div>
                     <a href="#" class="text-2xl font-bold text-orange-400 mb-4 inline-block">Youdemy</a>
                     <p class="text-gray-600">
@@ -174,7 +167,6 @@ if (!$course) {
                     </p>
                 </div>
 
-                <!-- Quick Links -->
                 <div class="md:ml-40">
                     <h3 class="font-bold text-lg mb-4">Quick Links</h3>
                     <ul class="space-y-2">
@@ -185,8 +177,6 @@ if (!$course) {
                     </ul>
                 </div>
 
-
-                <!-- Contact Us -->
                 <div class="md:ml-40">
                     <h3 class="font-bold mb-4">Contact Us</h3>
                     <ul class="space-y-2 text-gray-600">
@@ -199,7 +189,7 @@ if (!$course) {
 
             
         </div>
-        <!-- Footer Bottom -->
+        
         <div class="pt-8 border-t border-gray-200">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-600 mb-4 md:mb-0 text-xl">&copy; 2025 Youdemy. Tous droits réservés.</</p>
