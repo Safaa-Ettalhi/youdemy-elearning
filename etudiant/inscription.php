@@ -24,8 +24,7 @@ if ($stmt->rowCount() == 0) {
     die("L'utilisateur avec cet ID n'existe ");
 }
 
-try {
-    // Vérifier si l'utilisateur est déjà inscrit
+try {   
     $stmt = $pdo->prepare("SELECT * FROM Enrollment WHERE user_id = ? AND cours_id = ?");
     $stmt->execute([$utilisateur_id, $cours_id]);
 
@@ -33,8 +32,6 @@ try {
         header('Location: ./warning.php');
         exit();
     }
-
-    // Ajouter l'inscription
     $stmt = $pdo->prepare("INSERT INTO Enrollment (user_id, cours_id, date_inscription) VALUES (?, ?, NOW())");
     $stmt->execute([$utilisateur_id, $cours_id]);
 

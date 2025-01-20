@@ -5,7 +5,6 @@ include('../class/cours.php');
 include('../class/videoCourse.php');  
 include('../class/documentCourse.php'); 
 
-// Vérifiez si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
     header('Location: ../login.php');
     exit();
@@ -27,10 +26,13 @@ if (!empty($searchTerm)) {
     $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
 } else {
     $courses = array_merge($videoCourse->getCourses(), $documentCourse->getCourses());
-    //$totalCourses = $course->getTotalCourses();
+   
 }
 
-//$totalPages = ceil($totalCourses / $perPage);
+$totalCourses = count($courses);
+$totalPages = ceil($totalCourses / $perPage);
+
+$courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -54,7 +56,7 @@ if (!empty($searchTerm)) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
-    <!-- Navigation -->
+
     <nav class="fixed w-full bg-white/95 backdrop-blur-sm z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
@@ -64,7 +66,7 @@ if (!empty($searchTerm)) {
                     </a>
                 </div>
                 <div class="flex sm:hidden   items-center">
-                    <!-- Burger Icon for Mobile -->
+                    
                     <button id="burger-icon" class="text-gray-600 focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -72,7 +74,7 @@ if (!empty($searchTerm)) {
                     </button>
                 </div>
                 <div class="hidden sm:flex sm:items-center  sm:justify-center sm:space-x-8  text-xl" id="menu">
-                    <!-- <a href="#Accueil" class="text-gray-600 hover:text-gray-900">Accueil</a> -->
+                   
                     <a href="./catalogecours.php" class="text-gray-600 hover:text-gray-900">Cours</a>
                     <a href="./mescours.php" class="text-gray-600 hover:text-gray-900">Mes cours</a>
                     
@@ -90,7 +92,7 @@ if (!empty($searchTerm)) {
         </div>
     </nav>
 
-    <!-- Mobile Menu (Hidden Initially) -->
+    
     <div id="mobile-menu" class="bg-white shadow-lg absolute w-full left-0 top-20 z-50 hidden">
         <div class="px-6 py-4">
         <a href="./catalogecours.php" class="text-gray-600 hover:text-gray-900">Cours</a>
@@ -105,7 +107,7 @@ if (!empty($searchTerm)) {
         </div>
     </div>
 
-    <!-- Hero Section with Search -->
+    
     <div class="bg-youdemy text-white py-16 pt-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="text-4xl font-bold mb-4">Découvrez nos cours</h1>
@@ -119,11 +121,9 @@ if (!empty($searchTerm)) {
         </div>
     </div>
 
-    <!-- Course Catalog -->
+   
     <main class="md:pt-20" >
        
-
-        <!-- Courses Section -->
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Cours disponibles</h2>
         
@@ -135,11 +135,11 @@ if (!empty($searchTerm)) {
                         <h3 class="text-xl font-semibold text-gray-900 mb-2"><?= htmlspecialchars($course['titre']); ?></h3>
                         <p class="text-gray-600 mb-4"><?= htmlspecialchars($course['description']); ?></p>
                         <div class="flex items-center mb-4">
-                            <img src="<?= $course['avatar']; ?>" alt="Teacher" class="w-10 h-10 rounded-full mr-3">
+                            <img src="../uploads/avatars/<?= $course['avatar'] ?? 'simple.png' ; ?>" alt="Teacher" class="w-10 h-10 rounded-full mr-3">
                             <span class="text-sm text-gray-700">Par <?= htmlspecialchars($course['nom']); ?></span>
                         </div>
                         <div class="flex justify-between items-center mb-4">
-                            <span class="text-sm text-gray-500">Catégorie: <?= htmlspecialchars($course['category_name']); ?></span>
+                            <span class="text-sm text-gray-500">Catégorie: <?= htmlspecialchars($course['category_name']?? 'Aucune'); ?></span>
                             <span class="text-sm text-gray-500"><?= htmlspecialchars($course['nbr_etudiants']); ?> étudiants</span>
                         </div>
                         <div class="flex justify-between items-center">
@@ -156,10 +156,10 @@ if (!empty($searchTerm)) {
             </div>
 
            
-            <!-- Pagination -->
-<div class="mt-12 flex justify-center">
+
+            <div class="mt-12 flex justify-center">
     <div class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-        <!-- Lien Précédent -->
+        
         <?php if ($page > 1): ?>
             <a href="?page=<?= $page - 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                 <span class="sr-only">Précédent</span>
@@ -169,14 +169,14 @@ if (!empty($searchTerm)) {
             </a>
         <?php endif; ?>
 
-        <!-- Liens des pages -->
+       
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
             <a href="?page=<?= $i ?>" class="<?= $i === $page ? 'bg-youdemy text-white' : 'bg-white text-gray-500' ?> relative inline-flex items-center px-4 py-2 border text-sm font-medium">
                 <?= $i ?>
             </a>
         <?php endfor; ?>
 
-        <!-- Lien Suivant -->
+        
         <?php if ($page < $totalPages): ?>
             <a href="?page=<?= $page + 1 ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                 <span class="sr-only">Suivant</span>
@@ -188,12 +188,13 @@ if (!empty($searchTerm)) {
     </div>
 </div>
 
+
         </div>
     </main>
     <footer class="bg-gray-50 py-20 px-8 pt-16 pb-8">
         <div class="container max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-3 gap-8 md:gap-0 mb-8">
-                <!-- Brand -->
+             
                 <div>
                     <a href="#" class="text-2xl font-bold text-orange-400 mb-4 inline-block">Youdemy</a>
                     <p class="text-gray-600">
@@ -201,7 +202,6 @@ if (!empty($searchTerm)) {
                     </p>
                 </div>
 
-                <!-- Quick Links -->
                 <div class="md:ml-40">
                     <h3 class="font-bold text-lg mb-4">Quick Links</h3>
                     <ul class="space-y-2">
@@ -212,8 +212,6 @@ if (!empty($searchTerm)) {
                     </ul>
                 </div>
 
-
-                <!-- Contact Us -->
                 <div class="md:ml-40">
                     <h3 class="font-bold mb-4">Contact Us</h3>
                     <ul class="space-y-2 text-gray-600">
@@ -226,7 +224,7 @@ if (!empty($searchTerm)) {
 
             
         </div>
-        <!-- Footer Bottom -->
+
         <div class="pt-8 border-t border-gray-200">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-600 mb-4 md:mb-0 text-xl">&copy; 2025 Youdemy. Tous droits réservés.</</p>

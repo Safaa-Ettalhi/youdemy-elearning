@@ -30,9 +30,6 @@ if (isset($_POST['complete'])) {
     }
 }
 
-
-
-// Vérifier si l'ID du cours est fourni
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     echo "Cours introuvable.";
     exit();
@@ -83,7 +80,6 @@ if (!$cours) {
                     </a>
                 </div>
                 <div class="flex sm:hidden   items-center">
-                    <!-- Burger Icon for Mobile -->
                     <button id="burger-icon" class="text-gray-600 focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -91,7 +87,6 @@ if (!$cours) {
                     </button>
                 </div>
                 <div class="hidden sm:flex sm:items-center  sm:justify-center sm:space-x-8  text-xl" id="menu">
-                    <!-- <a href="#Accueil" class="text-gray-600 hover:text-gray-900">Accueil</a> -->
                     <a href="./catalogecours.php" class="text-gray-600 hover:text-gray-900">Cours</a>
                     <a href="./mescours.php" class="text-gray-600 hover:text-gray-900">Mes cours</a>
                     
@@ -126,10 +121,10 @@ if (!$cours) {
 
     <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Contenu Principal -->
+           
             <div class="lg:col-span-2">
                 
-<!-- Section Vidéo -->
+
  <?php if (!empty($cours['vedio'])): ?>
 <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
     <h2 class="text-xl font-semibold mb-4 flex items-center">
@@ -142,7 +137,7 @@ if (!$cours) {
     <div class="aspect-video bg-gray-100 rounded-lg">
         
             <iframe class="w-full h-full rounded-lg" 
-                    src="<?php echo htmlspecialchars($cours['vedio']); ?>" 
+                    src="../<?php echo htmlspecialchars($cours['vedio']); ?>" 
                     title="Vidéo du cours" 
                     allowfullscreen>
             </iframe>
@@ -150,9 +145,9 @@ if (!$cours) {
     </div>
     <div class="flex gap-4 mt-12">
         <form method="POST" action="moncours.php">
-            <!-- Champ caché pour envoyer l'ID du cours -->
+         
             <input type="hidden" name="cours_id" value="<?php echo $course_id; ?>">
-            <!-- Bouton pour mettre à jour le statut -->
+            
             <button type="submit" name="complete" class="bg-orange-500 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-600">
                 Compléter
             </button>
@@ -183,9 +178,9 @@ if (!$cours) {
     <iframe src="../<?= htmlspecialchars($cours['fichier_document']) ?>" width="100%" height="700px"></iframe>
     <div class="flex gap-4 mt-10">
         <form method="POST" action="moncours.php">
-            <!-- Champ caché pour envoyer l'ID du cours -->
+          
             <input type="hidden" name="cours_id" value="<?php echo $course_id; ?>">
-            <!-- Bouton pour mettre à jour le statut -->
+         
             <button type="submit" name="complete" class="bg-orange-500 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-600">
                 Compléter
             </button>
@@ -198,16 +193,19 @@ if (!$cours) {
 <?php endif; ?>
             </div>
 
-            <!-- Barre latérale -->
+          
             <div class="space-y-6">
-                <!-- Information de l'enseignant -->
+                
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <h2 class="text-xl font-semibold mb-4">Enseignant</h2>
                     <div class="flex items-center space-x-4">
-                        <img src="../uploads/avatars/<?php echo htmlspecialchars($cours['avatar']); ?>" alt="Enseignant" class="w-16 h-16 rounded-full">
+                        <img src="../uploads/avatars/<?php echo htmlspecialchars($cours['avatar']) ?? 'simple.png' ; ?>" alt="Enseignant" class="w-16 h-16 rounded-full">
                         <div>
                             <h3 class="font-medium"> <?php echo htmlspecialchars($cours['enseignant']); ?></h3>
-                            <p class="text-gray-500 text-sm">Expet en <?php echo htmlspecialchars($cours['categorie']); ?></p>
+                            <?php if (!empty($cours['categorie'])) { ?>
+    <p class="text-gray-500 text-sm">Expet en <?php echo htmlspecialchars($cours['categorie']); ?></p>
+    <?php } ?>
+
                         </div>
                     </div>
                     <p class="mt-4 text-gray-600">
@@ -215,7 +213,7 @@ if (!$cours) {
                     </p>
                 </div>
 
-                <!-- Catégories et Tags -->
+               
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <div class="mb-6">
                         <h2 class="text-xl font-semibold mb-4 flex items-center">
@@ -225,10 +223,9 @@ if (!$cours) {
                             Catégorie
                         </h2>
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
-                          <?php echo htmlspecialchars($cours['categorie']); ?>
-                        </span>
-                    </div>
-                    
+    <?php echo htmlspecialchars($cours['categorie'] ?? 'Aucune catégorie sélectionnée'); ?>
+</span>
+                    </div>          
                    <div>
                     <h2 class="text-xl font-semibold mb-4 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -242,7 +239,6 @@ if (!$cours) {
         if (!empty($cours['tags'])) {
             
             $tags = explode(',', $cours['tags']); 
-            // Supprimer les doublons en utilisant array_unique
             $tags = array_unique(array_map('trim', $tags));
             foreach ($tags as $tag) {
                 echo '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">'
@@ -264,7 +260,7 @@ if (!$cours) {
     <footer class="bg-gray-50 py-20 px-8 pt-16 pb-8">
         <div class="container max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-3 gap-8 md:gap-0 mb-8">
-                <!-- Brand -->
+
                 <div>
                     <a href="#" class="text-2xl font-bold text-orange-400 mb-4 inline-block">Youdemy</a>
                     <p class="text-gray-600">
@@ -272,7 +268,6 @@ if (!$cours) {
                     </p>
                 </div>
 
-                <!-- Quick Links -->
                 <div class="md:ml-40">
                     <h3 class="font-bold text-lg mb-4">Quick Links</h3>
                     <ul class="space-y-2">
@@ -282,9 +277,7 @@ if (!$cours) {
                         <li><a href="#" class="text-gray-600 hover:text-gray-900">Blog</a></li>
                     </ul>
                 </div>
-
-
-                <!-- Contact Us -->
+         
                 <div class="md:ml-40">
                     <h3 class="font-bold mb-4">Contact Us</h3>
                     <ul class="space-y-2 text-gray-600">
@@ -297,7 +290,7 @@ if (!$cours) {
 
             
         </div>
-        <!-- Footer Bottom -->
+
         <div class="pt-8 border-t border-gray-200">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-600 mb-4 md:mb-0 text-xl">&copy; 2025 Youdemy. Tous droits réservés.</</p>

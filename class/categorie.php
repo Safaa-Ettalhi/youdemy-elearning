@@ -4,13 +4,11 @@ class Category {
     private $id;
     private $nom;
     private $pdo;
-
     public function __construct($pdo, $id = null, $nom = '') {
         $this->pdo = $pdo;
         $this->id = $id;
         $this->nom = $nom;
-    }
-
+    } 
 public function getCategories() {
 
     $stmt = $this->pdo->prepare('SELECT * FROM Category ');
@@ -18,10 +16,6 @@ public function getCategories() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-    public function deleteCategory($id) {
-        $stmt = $this->pdo->prepare('DELETE FROM Category WHERE id = ?');
-        return $stmt->execute([$id]);
-    }
 }
 
 ?>

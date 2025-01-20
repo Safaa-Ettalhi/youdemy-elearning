@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
-    <!-- Navigation -->
+    
     <nav class="fixed w-full bg-white/95 backdrop-blur-sm z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
@@ -198,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Image Upload Section -->
+               
                 <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">
                         Image du cours
@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Video Upload Section -->
+                
                 <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">
                         Vidéo du cours
@@ -261,7 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Document Upload Section -->
+                
                 <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">
                         Document du cours
@@ -310,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script>
-        // Afficher le nom du fichier sélectionné pour l'image
+        
         document.getElementById('file-upload-image').addEventListener('change', function(e) {
             const fileName = e.target.files[0]?.name;
             if (fileName) {
@@ -319,7 +319,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
 
-        // Afficher le nom du fichier sélectionné pour la vidéo
+        
         document.getElementById('file-upload-video').addEventListener('change', function(e) {
             const fileName = e.target.files[0]?.name;
             if (fileName) {
@@ -328,7 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
 
-        // Afficher le nom du fichier sélectionné pour le document
+        
         document.getElementById('file-upload-document').addEventListener('change', function(e) {
             const fileName = e.target.files[0]?.name;
             if (fileName) {

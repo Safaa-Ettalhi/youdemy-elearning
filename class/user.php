@@ -100,8 +100,6 @@ class User {
         header('Location: ../login.php');
         exit();
     }
-
-    // Getter methods
     public function getId() {
         return $this->id;
     }

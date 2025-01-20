@@ -34,7 +34,7 @@
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
-                    <!-- Burger Icon for Mobile -->
+                    
                     <button id="burger-icon"
                         class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
                         <a href="../deconnecter.php">Deconnecter</a>
@@ -51,15 +51,6 @@
             </div>
         </div>
     </nav>
-
-
-
-
-       
-
-       
-
-        <!-- Hero Section -->
         <section class="hero flex pt-20 flex-row items-center justify-center mt-24">
             <div class="mb-6">
                 <img src="./access-denied.png" alt="Access Denied" height="400px" width="400px"
@@ -84,14 +75,9 @@
         </section>
 
     </div>
-
-
-    <!-- Footer Section -->
-
     <footer class="bg-gray-100 py-20 px-8 pt-16 pb-8">
         <div class="container max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-3 gap-8 md:gap-0 mb-8">
-                <!-- Brand -->
                 <div>
                     <a href="#" class="text-2xl font-bold text-orange-400 mb-4 inline-block">Youdemy</a>
                     <p class="text-gray-600">
@@ -99,7 +85,6 @@
                     </p>
                 </div>
 
-                <!-- Quick Links -->
                 <div class="md:ml-40">
                     <h3 class="font-bold text-lg mb-4">Quick Links</h3>
                     <ul class="space-y-2">
@@ -110,8 +95,6 @@
                     </ul>
                 </div>
 
-
-                <!-- Contact Us -->
                 <div class="md:ml-40">
                     <h3 class="font-bold mb-4">Contact Us</h3>
                     <ul class="space-y-2 text-gray-600">
@@ -124,7 +107,6 @@
 
             
         </div>
-        <!-- Footer Bottom -->
         <div class="pt-8 border-t border-gray-200">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-600 mb-4 md:mb-0 text-xl">&copy; 2025 Youdemy. Tous droits réservés.</</p>

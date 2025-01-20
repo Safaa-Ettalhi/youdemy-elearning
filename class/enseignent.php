@@ -4,7 +4,7 @@ class Enseignant extends User {
 
     public function __construct($id, $nom, $email, $mot_de_passe, $pdo) {
         parent::__construct($id, $nom, $email, $mot_de_passe, 'Enseignant', $pdo);
-    }  
+    }
     public function getEnseignantPaginated($pageE, $perPage) {
     $offset = ($pageE - 1) * $perPage;
 

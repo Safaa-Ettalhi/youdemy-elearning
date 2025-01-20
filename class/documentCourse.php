@@ -76,7 +76,7 @@ class DocumentCourse extends Course {
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
-}  
+}
     public function getCoursesByEnseignant($enseignant_id) {
         
         $stmt = $this->pdo->prepare("SELECT c.*, cat.nom AS categorie, 
