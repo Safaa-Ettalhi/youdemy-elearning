@@ -13,13 +13,13 @@ class Enrollment {
         $this->date_inscription = date('Y-m-d');
     }
 
-    public function getEnrollmentsByStudent($etudiant_id) {
+public function getEnrollmentsByStudent($etudiant_id) {
     $stmt = $this->pdo->prepare('
         SELECT 
             Cours.*, 
             Enrollment.date_inscription,
             Utilisateur.nom AS enseignant_nom,
-            Utilisateur.avatar AS enseignant_avatar
+            Utilisateur.avatar AS enseignant_avatar           
         FROM Enrollment
         JOIN Cours ON Enrollment.cours_id = Cours.id
         JOIN Utilisateur ON Cours.user_id = Utilisateur.id
@@ -27,6 +27,28 @@ class Enrollment {
     ');
 
     $stmt->bindParam(':etudiant_id', $etudiant_id, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function getEnrollmentsByTeacher($enseignant_id) {
+    $stmt = $this->pdo->prepare('
+        SELECT 
+            E.user_id AS etudiant_id,
+            E.date_inscription,
+            E.status,
+            U.nom AS etudiant_nom,
+            U.email AS etudiant_email,
+            U.avatar AS etudiant_avatar,
+            C.titre AS cours_nom,
+            C.description AS cours_description
+        FROM Enrollment E
+        JOIN Cours C ON E.cours_id = C.id
+        JOIN Utilisateur U ON E.user_id = U.id
+        WHERE C.user_id = :enseignant_id
+    ');
+
+    $stmt->bindParam(':enseignant_id', $enseignant_id, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
