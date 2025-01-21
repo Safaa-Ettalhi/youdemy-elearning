@@ -53,8 +53,8 @@ $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
-                    <a href="#" class="flex-shrink-0">
-                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
+                    <a href="../index.php" class="flex-shrink-0">
+                        <img src="../SAFAA BB.svg" alt="">
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
@@ -76,27 +76,27 @@ $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
                 </div>
                 <div class="hidden sm:flex sm:items-center sm:justify-center sm:gap-2">
                 <button class="bg-white hover:bg-orange-500 hover:text-white text-l text-orange-400 border border-orange-400 px-6 py-2 rounded-full transition duration-300">
-                    <a href="../login.html">login</a>
+                    <a href="../login.php">login</a>
                 </button>
                 <button class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
-                   <a href="../register.html">s'inscrire</a> 
+                   <a href="../register.php">s'inscrire</a> 
                 </button></div>
             </div>
         </div>
     </nav>
     <div id="mobile-menu" class="bg-white shadow-lg absolute w-full left-0 top-20 z-50 hidden">
         <div class="px-6 py-4">
-        <a href="../index.php" class="text-gray-600 hover:text-gray-900">Accueil</a>
-                    <a href="./cours.php" class="text-gray-600 hover:text-gray-900">Cours</a>
-                    <a href="../index.php" class="text-gray-600 hover:text-gray-900">Mentors</a>
-                    <a href="../index.php" class="text-gray-600 hover:text-gray-900">Blog</a>
-                    <a href="../index.php" class="text-gray-600 hover:text-gray-900">Contact</a>
+            <a href="../index.php" class="block text-gray-600 hover:text-gray-900 py-2">Accueil</a>
+            <a href="./cours.php" class="block text-gray-600 hover:text-gray-900 py-2">Cours</a>
+            <a href="../index.php" class="block text-gray-600 hover:text-gray-900 py-2">Mentors</a>
+            <a href="../index.php" class="block text-gray-600 hover:text-gray-900 py-2">Blog</a>
+            <a href="../index.php" class="block text-gray-600 hover:text-gray-900 py-2">Contact</a>
             
             <button class="w-full bg-white hover:bg-orange-500 hover:text-white text-l text-orange-400 border border-orange-400 px-6 py-2 rounded-full transition duration-300 mt-4">
-                <a href="../register.html">s'inscrire</a>
+                <a href="./register.php">s'inscrire</a>
             </button>
             <button class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 mt-4">
-                <a href="../login.html">login</a>
+                <a href="./login.php">login</a>
             </button>
         </div>
     </div>
@@ -184,7 +184,7 @@ $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
     <footer class="bg-gray-50 py-20 px-8 pt-16 pb-8">
         <div class="container max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-3 gap-8 md:gap-0 mb-8">
-                <!-- Brand -->
+               
                 <div>
                     <a href="#" class="text-2xl font-bold text-orange-400 mb-4 inline-block">Youdemy</a>
                     <p class="text-gray-600">
@@ -192,7 +192,7 @@ $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
                     </p>
                 </div>
 
-                <!-- Quick Links -->
+               
                 <div class="md:ml-40">
                     <h3 class="font-bold text-lg mb-4">Quick Links</h3>
                     <ul class="space-y-2">
@@ -204,7 +204,7 @@ $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
                 </div>
 
 
-                <!-- Contact Us -->
+                
                 <div class="md:ml-40">
                     <h3 class="font-bold mb-4">Contact Us</h3>
                     <ul class="space-y-2 text-gray-600">
@@ -217,7 +217,7 @@ $courses = array_slice($courses, ($page - 1) * $perPage, $perPage);
 
             
         </div>
-        <!-- Footer Bottom -->
+    
         <div class="pt-8 border-t border-gray-200">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-600 mb-4 md:mb-0 text-xl">&copy; 2025 Youdemy. Tous droits réservés.</</p>

@@ -50,8 +50,8 @@ if (!$course) {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
-                    <a href="#" class="flex-shrink-0">
-                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
+                    <a href="../index.php" class="flex-shrink-0">
+                        <img src="../SAFAA BB.svg" alt="">
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
@@ -104,7 +104,10 @@ if (!$course) {
             
             
             <div class="flex items-center">
-                <img src="../uploads/avatars/<?= htmlspecialchars($course['avatar']) ?? 'simple.png' ; ?>" alt="<?= htmlspecialchars($course['enseignant']); ?>" class="w-12 h-12 rounded-full mr-4">
+            <img src="../uploads/avatars/<?= !empty($course['avatar']) ? htmlspecialchars($course['avatar']) : 'simple.png'; ?>" 
+            alt="<?= htmlspecialchars($course['enseignant']); ?>" 
+            class="w-12 h-12 rounded-full mr-4">
+
                 <div>
                     <p class="font-semibold">Créé par <?= htmlspecialchars($course['enseignant']); ?></p>
                     <?php if (!empty($cours['categorie'])) { ?>
@@ -125,7 +128,7 @@ if (!$course) {
                 </div>
             </div>
             
-            <div class="lg:col-span-1">
+            <div class="lg:col-span-1 mb-6">
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="mb-6">
                         <img src="<?= htmlspecialchars($course['image']); ?>" alt="Course thumbnail" class="w-full rounded-lg">
@@ -138,10 +141,13 @@ if (!$course) {
                 </div>
             </div>
         </div>
-        <div class="mb-8">
+        <div class="mb-8 ">
                     <h2 class="text-2xl font-bold mb-4">À propos de l'instructeur</h2>
                     <div class="flex items-start mb-6">
-                    <img src="../uploads/avatars/<?= htmlspecialchars($course['avatar']) ?? 'simple.png'; ?>" alt="<?= htmlspecialchars($course['enseignant']); ?>" class="w-24 h-24 rounded-full mr-6">
+                    <img src="../uploads/avatars/<?= !empty($course['avatar']) ? htmlspecialchars($course['avatar']) : 'simple.png'; ?>" 
+     alt="<?= htmlspecialchars($course['enseignant']); ?>" 
+     class="w-24 h-24 rounded-full mr-6">
+
                         <div>
                             <h3 class="text-xl text-orange-400 font-semibold mb-2"><?= htmlspecialchars($course['enseignant']); ?></h3>
                             <?php if (!empty($course['categorie'])) { ?>
@@ -212,6 +218,6 @@ if (!$course) {
     </footer>
    
     
-    <script src="scriptF.js"></script>
+    <script src="../scriptF.js"></script>
 </body>
 </html>

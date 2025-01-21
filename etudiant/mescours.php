@@ -89,7 +89,10 @@ $mescours = $enrollment->getEnrollmentsByStudent($etudiant_id);
                         <div class="p-6">
                             <h3 class="text-xl font-semibold mb-2"><?php echo htmlspecialchars($cours['titre']); ?></h3>
                             <div class="flex items-center mb-4">
-                                <img src="../uploads/avatars/<?php echo htmlspecialchars($cours['enseignant_avatar']) ?? 'simple.png' ; ?>" alt="Instructor" class="w-8 h-8 rounded-full mr-2">
+                            <img src="../uploads/avatars/<?= !empty($cours['enseignant_avatar']) ? htmlspecialchars($cours['enseignant_avatar']) : 'simple.png'; ?>" 
+     alt="Instructor" 
+     class="w-8 h-8 rounded-full mr-2">
+
                                 <span class="text-sm text-gray-500">Par <?php echo htmlspecialchars($cours['enseignant_nom']); ?></span>
                             </div>
                             

@@ -60,12 +60,12 @@ $enrollments = $enrollment->getEnrollmentsByTeacher($id_enseignant);
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
-                    <a href="#" class="flex-shrink-0">
-                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
+                    <a href="./dashbord.php" class="flex-shrink-0">
+                        <img src="../SAFAA BB.svg" alt="">
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
-                    <!-- Burger Icon for Mobile -->
+                   
                     <button id="burger-icon"
                         class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
                         <a href="../deconnecter.php">Deconnecter</a>
@@ -457,7 +457,10 @@ $enrollments = $enrollment->getEnrollmentsByTeacher($id_enseignant);
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap flex items-center">
                             <div class="h-10 w-10 rounded-full overflow-hidden border border-gray-200 flex-shrink-0">
-                                <img src="../uploads/avatars/<?= htmlspecialchars($enrollment['etudiant_avatar']) ?? 'simple.png'  ?>" alt="Avatar" class="w-full h-full object-cover">
+                            <img src="../uploads/avatars/<?= !empty($enrollment['etudiant_avatar']) ? htmlspecialchars($enrollment['etudiant_avatar']) : 'simple.png'; ?>" 
+                                alt="Avatar" 
+                                class="w-full h-full object-cover">
+
                             </div>
                             <div class="ml-4">
                                 <div class="text-sm font-medium text-gray-800"><?= htmlspecialchars($enrollment['etudiant_nom']) ?></div>

@@ -108,8 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
-                    <a href="#" class="flex-shrink-0">
-                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
+                    <a href="../dashbord.php" class="flex-shrink-0">
+                        <img src="../../SAFAA BB.svg" alt="">
                     </a>
                 </div>
                 <div class="flex items-center">
