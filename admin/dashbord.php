@@ -99,12 +99,12 @@ $tags = $tag->getTags();
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 <div class="flex items-center">
-                    <a href="#" class="flex-shrink-0">
-                        <span class="text-3xl font-bold text-orange-400">Youdemy</span>
+                    <a href="./dashbord.php" class="flex-shrink-0">
+                        <img src="../SAFAA BB.svg" alt="">
                     </a>
                 </div>
                 <div class="flex sm:hidden items-center">
-                    <!-- Burger Icon for Mobile -->
+                    
                     <button id="burger-icon"
                         class="w-full bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-full transition duration-300 ">
                         <a href="../deconnecter.php">Deconnecter</a>
@@ -125,9 +125,8 @@ $tags = $tag->getTags();
 
     <h1 class="text-3xl pt-36 text-center font-bold">Tableau de bord Administrateur</h1>
 
-    <!-- Main Content -->
+
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Global Stats -->
         <div class="mb-8">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Statistiques globales</h2>
             <div class="flex flex-col gap-5 md:grid md:grid-cols-2 lg:grid-cols-4">
@@ -203,18 +202,18 @@ $tags = $tag->getTags();
             </div>
         </div>
 
-        <!-- Teacher Account Validation -->
+
         <div class="bg-white shadow-lg rounded-lg mb-8">
             <div class="px-4 py-5 bg-orange-400 text-white">
                 <h2 class="text-xl font-semibold">Validation des comptes enseignants</h2>
             </div>
             <div class="p-4">
                 <?php foreach($pendingTeachers as $teacher): ?>
-                <div class="flex items-center justify-between py-3 border-b">
+                <div class="flex gap-4 w-[200px] flex-col md:w-full md:pb-4  md:flex-row items-center justify-between border-b">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <img class="h-12 w-12 rounded-full object-cover"
-                                src="../uploads/avatars/<?php echo htmlspecialchars($teacher['avatar']); ?>">
+                            src="../uploads/avatars/<?php echo !empty($teacher['avatar']) ? htmlspecialchars($teacher['avatar']) : 'simple.png'; ?>">
                         </div>
                         <div class="ml-4">
                             <p class="font-semibold"><?php echo htmlspecialchars($teacher['nom']); ?></p>
@@ -239,7 +238,6 @@ $tags = $tag->getTags();
             </div>
         </div>
 
-        <!-- User Management -->
         <div class="bg-white shadow-lg rounded-lg">
             <div class="px-4 py-5 bg-orange-400 text-white">
                 <h2 class="text-xl font-semibold">Gestion des utilisateurs</h2>
@@ -271,11 +269,12 @@ $tags = $tag->getTags();
                             <tr>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full object-cover"
-                                                src="../uploads/avatars/<?php echo htmlspecialchars($user['avatar']); ?>"
-                                                alt="User avatar">
-                                        </div>
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full object-cover"
+                                            src="../uploads/avatars/<?php echo !empty($user['avatar']) ? htmlspecialchars($user['avatar']) : 'simple.png'; ?>"
+                                            alt="User avatar">
+                                    </div>
+
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">
                                                 <?php echo htmlspecialchars($user['nom']); ?></div>
@@ -319,7 +318,7 @@ $tags = $tag->getTags();
                 </div>
             </div>
         </div>
-        <!-- Content Management -->
+        
         <div class="bg-white shadow-lg rounded-lg mb-8 overflow-hidden mt-8">
             <div class="px-4 py-5 sm:px-6 bg-orange-400 text-white">
                 <h2 class="text-xl font-semibold">Gestion des contenus</h2>
